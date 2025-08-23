@@ -16,11 +16,13 @@ class VocabularyApp {
     this.speechRecognition = null;
     this.speechSynthesis = window.speechSynthesis;
     this.isListening = false;
+    this.theme = 'auto'; // auto, light, dark
     this.init();
   }
 
   async init() {
     await this.initDB();
+    this.initTheme();
     this.initSpeechRecognition();
     this.setupEventListeners();
     this.showSection("upload");
@@ -65,6 +67,71 @@ class VocabularyApp {
         }
       };
     });
+  }
+
+  initTheme() {
+    // Load saved theme or default to auto
+    const savedTheme = localStorage.getItem('vocabulary-practice-theme') || 'auto';
+    this.theme = savedTheme;
+    this.applyTheme();
+
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaQuery.addListener(() => {
+      if (this.theme === 'auto') {
+        this.applyTheme();
+      }
+    });
+  }
+
+  applyTheme() {
+    const html = document.documentElement;
+    
+    if (this.theme === 'auto') {
+      // Remove explicit theme, let CSS media query handle it
+      html.removeAttribute('data-theme');
+    } else {
+      html.setAttribute('data-theme', this.theme);
+    }
+
+    // Update toggle button if it exists
+    this.updateThemeToggle();
+  }
+
+  toggleTheme() {
+    const themes = ['auto', 'light', 'dark'];
+    const currentIndex = themes.indexOf(this.theme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    
+    this.theme = themes[nextIndex];
+    localStorage.setItem('vocabulary-practice-theme', this.theme);
+    this.applyTheme();
+  }
+
+  getThemeIcon() {
+    switch (this.theme) {
+      case 'light': return '☀️';
+      case 'dark': return '🌙';
+      case 'auto':
+      default: return '🌓';
+    }
+  }
+
+  getThemeLabel() {
+    switch (this.theme) {
+      case 'light': return 'Light';
+      case 'dark': return 'Dark';
+      case 'auto':
+      default: return 'Auto';
+    }
+  }
+
+  updateThemeToggle() {
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+      themeToggle.innerHTML = `${this.getThemeIcon()} ${this.getThemeLabel()}`;
+      themeToggle.title = `Current theme: ${this.getThemeLabel()}. Click to cycle through Auto → Light → Dark`;
+    }
   }
 
   setupEventListeners() {
@@ -127,6 +194,11 @@ class VocabularyApp {
       .addEventListener("click", () => {
         this.stopPractice();
       });
+
+    // Theme toggle
+    document.getElementById("theme-toggle")?.addEventListener("click", () => {
+      this.toggleTheme();
+    });
 
     // Voice controls
     document.addEventListener("click", (e) => {

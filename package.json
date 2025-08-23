@@ -1,0 +1,27 @@
+{
+  "name": "vocabulary-practice",
+  "version": "1.0.0",
+  "description": "A vocabulary practice web application with multiple study modes",
+  "main": "index.html",
+  "scripts": {
+    "dev": "serve -s . -l 3000",
+    "build": "echo 'Static site - no build needed'",
+    "start": "serve -s . -l 3000"
+  },
+  "keywords": [
+    "vocabulary",
+    "language-learning",
+    "flashcards",
+    "practice",
+    "japanese",
+    "study"
+  ],
+  "author": "Vocabulary Practice App",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

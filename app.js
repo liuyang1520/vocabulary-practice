@@ -16,8 +16,20 @@ class VocabularyApp {
     this.speechRecognition = null;
     this.speechSynthesis = window.speechSynthesis;
     this.isListening = false;
-    this.theme = 'auto'; // auto, light, dark
+    this.theme = "auto"; // auto, light, dark
+    this.audioContext = null;
+    this.detectedLanguage = null;
+    this.initAudioContext();
     this.init();
+  }
+
+  initAudioContext() {
+    try {
+      this.audioContext = new (window.AudioContext ||
+        window.webkitAudioContext)();
+    } catch (e) {
+      console.warn("Web Audio API not supported");
+    }
   }
 
   async init() {
@@ -71,14 +83,15 @@ class VocabularyApp {
 
   initTheme() {
     // Load saved theme or default to auto
-    const savedTheme = localStorage.getItem('vocabulary-practice-theme') || 'auto';
+    const savedTheme =
+      localStorage.getItem("vocabulary-practice-theme") || "auto";
     this.theme = savedTheme;
     this.applyTheme();
 
     // Listen for system theme changes
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     mediaQuery.addListener(() => {
-      if (this.theme === 'auto') {
+      if (this.theme === "auto") {
         this.applyTheme();
       }
     });
@@ -86,12 +99,12 @@ class VocabularyApp {
 
   applyTheme() {
     const html = document.documentElement;
-    
-    if (this.theme === 'auto') {
+
+    if (this.theme === "auto") {
       // Remove explicit theme, let CSS media query handle it
-      html.removeAttribute('data-theme');
+      html.removeAttribute("data-theme");
     } else {
-      html.setAttribute('data-theme', this.theme);
+      html.setAttribute("data-theme", this.theme);
     }
 
     // Update toggle button if it exists
@@ -99,35 +112,41 @@ class VocabularyApp {
   }
 
   toggleTheme() {
-    const themes = ['auto', 'light', 'dark'];
+    const themes = ["auto", "light", "dark"];
     const currentIndex = themes.indexOf(this.theme);
     const nextIndex = (currentIndex + 1) % themes.length;
-    
+
     this.theme = themes[nextIndex];
-    localStorage.setItem('vocabulary-practice-theme', this.theme);
+    localStorage.setItem("vocabulary-practice-theme", this.theme);
     this.applyTheme();
   }
 
   getThemeIcon() {
     switch (this.theme) {
-      case 'light': return '☀️';
-      case 'dark': return '🌙';
-      case 'auto':
-      default: return '🌓';
+      case "light":
+        return "☀️";
+      case "dark":
+        return "🌙";
+      case "auto":
+      default:
+        return "🌓";
     }
   }
 
   getThemeLabel() {
     switch (this.theme) {
-      case 'light': return 'Light';
-      case 'dark': return 'Dark';
-      case 'auto':
-      default: return 'Auto';
+      case "light":
+        return "Light";
+      case "dark":
+        return "Dark";
+      case "auto":
+      default:
+        return "Auto";
     }
   }
 
   updateThemeToggle() {
-    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggle = document.getElementById("theme-toggle");
     if (themeToggle) {
       themeToggle.innerHTML = `${this.getThemeIcon()} ${this.getThemeLabel()}`;
       themeToggle.title = `Current theme: ${this.getThemeLabel()}. Click to cycle through Auto → Light → Dark`;
@@ -181,8 +200,8 @@ class VocabularyApp {
 
     document
       .getElementById("check-answer-btn")
-      .addEventListener("click", () => {
-        this.checkAnswer();
+      .addEventListener("click", async () => {
+        await this.checkAnswer();
       });
 
     document.getElementById("next-word-btn").addEventListener("click", () => {
@@ -232,17 +251,40 @@ class VocabularyApp {
   }
 
   initSpeechRecognition() {
+    // Initialize TTS voice loading
+    this.loadVoices();
+
+    // Detect language from vocabulary
+    this.detectLanguageFromVocabulary();
+
     if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
       const SpeechRecognition =
         window.SpeechRecognition || window.webkitSpeechRecognition;
       this.speechRecognition = new SpeechRecognition();
       this.speechRecognition.continuous = false;
       this.speechRecognition.interimResults = false;
-      this.speechRecognition.lang = "ja-JP"; // Default to Japanese, can be changed
+      this.speechRecognition.maxAlternatives = 5; // Get multiple alternatives
+
+      // Set language based on detection
+      this.speechRecognition.lang = this.getRecognitionLanguage();
 
       this.speechRecognition.onresult = (event) => {
-        const result = event.results[0][0].transcript;
-        document.getElementById("answer-input").value = result;
+        // Get the best result or try alternatives
+        const results = event.results[0];
+        let bestResult = results[0].transcript;
+
+        // Try to find the best match among alternatives
+        for (let i = 0; i < results.length; i++) {
+          const alternative = results[i].transcript;
+          // You could add logic here to prefer certain alternatives
+          // For now, we'll use the first (highest confidence) result
+          if (i === 0) {
+            bestResult = alternative;
+            break;
+          }
+        }
+
+        document.getElementById("answer-input").value = bestResult;
         this.stopListening();
       };
 
@@ -255,6 +297,140 @@ class VocabularyApp {
         this.stopListening();
       };
     }
+  }
+
+  async detectLanguageFromVocabulary() {
+    try {
+      const transaction = this.db.transaction(["words"], "readonly");
+      const store = transaction.objectStore("words");
+
+      const words = await new Promise((resolve, reject) => {
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+
+      if (words.length === 0) {
+        this.detectedLanguage = "ja"; // Default to Japanese
+        return;
+      }
+
+      // Sample first few words to detect language
+      const sampleWords = words.slice(0, Math.min(10, words.length));
+      const languageScores = {
+        ja: 0, // Japanese
+        en: 0, // English
+        zh: 0, // Chinese
+        ko: 0, // Korean
+        es: 0, // Spanish
+        fr: 0, // French
+        de: 0, // German
+      };
+
+      for (const word of sampleWords) {
+        const text = word.word + " " + word.translation;
+        languageScores.ja += this.countJapaneseChars(text);
+        languageScores.zh += this.countChineseChars(text);
+        languageScores.ko += this.countKoreanChars(text);
+        languageScores.en += this.countEnglishChars(text);
+        languageScores.es += this.countSpanishChars(text);
+        languageScores.fr += this.countFrenchChars(text);
+        languageScores.de += this.countGermanChars(text);
+      }
+
+      // Find the language with highest score
+      const detectedLang = Object.keys(languageScores).reduce((a, b) =>
+        languageScores[a] > languageScores[b] ? a : b,
+      );
+
+      this.detectedLanguage = detectedLang;
+      console.log(
+        "🌐 Detected language:",
+        detectedLang,
+        "scores:",
+        languageScores,
+      );
+    } catch (error) {
+      console.warn("Language detection failed, using Japanese default:", error);
+      this.detectedLanguage = "ja";
+    }
+  }
+
+  countJapaneseChars(text) {
+    const hiragana = (text.match(/[\u3040-\u309F]/g) || []).length;
+    const katakana = (text.match(/[\u30A0-\u30FF]/g) || []).length;
+    const kanji = (text.match(/[\u4E00-\u9FAF]/g) || []).length;
+    return hiragana + katakana + kanji;
+  }
+
+  countChineseChars(text) {
+    return (text.match(/[\u4E00-\u9FAF]/g) || []).length;
+  }
+
+  countKoreanChars(text) {
+    return (text.match(/[\uAC00-\uD7AF]/g) || []).length;
+  }
+
+  countEnglishChars(text) {
+    return (text.match(/[a-zA-Z]/g) || []).length;
+  }
+
+  countSpanishChars(text) {
+    return (text.match(/[áéíóúüñ]/gi) || []).length;
+  }
+
+  countFrenchChars(text) {
+    return (text.match(/[àâäéèêëïîôöùûüÿç]/gi) || []).length;
+  }
+
+  countGermanChars(text) {
+    return (text.match(/[äöüß]/gi) || []).length;
+  }
+
+  getRecognitionLanguage() {
+    const langMap = {
+      ja: "ja-JP",
+      en: "en-US",
+      zh: "zh-CN",
+      ko: "ko-KR",
+      es: "es-ES",
+      fr: "fr-FR",
+      de: "de-DE",
+    };
+
+    return langMap[this.detectedLanguage] || "ja-JP";
+  }
+
+  getTTSLanguage() {
+    return this.detectedLanguage || "ja";
+  }
+
+  loadVoices() {
+    // Voices might not be loaded immediately
+    if (this.speechSynthesis.getVoices().length === 0) {
+      this.speechSynthesis.onvoiceschanged = () => {
+        console.log("Voices loaded:", this.speechSynthesis.getVoices().length);
+        this.logAvailableJapaneseVoices();
+      };
+    } else {
+      this.logAvailableJapaneseVoices();
+    }
+  }
+
+  logAvailableJapaneseVoices() {
+    const voices = this.speechSynthesis.getVoices();
+    const japaneseVoices = voices.filter(
+      (voice) => voice.lang === "ja-JP" || voice.lang.startsWith("ja"),
+    );
+
+    console.log(
+      "Available Japanese voices:",
+      japaneseVoices.map((v) => ({
+        name: v.name,
+        lang: v.lang,
+        localService: v.localService,
+      })),
+    );
   }
 
   showSection(sectionName) {
@@ -602,12 +778,12 @@ class VocabularyApp {
     const answerInput = document.getElementById("answer-input");
     if (answerInput) {
       answerInput.focus();
-      answerInput.addEventListener("keypress", (e) => {
+      answerInput.addEventListener("keypress", async (e) => {
         if (e.key === "Enter") {
           if (
             document.getElementById("check-answer-btn").style.display !== "none"
           ) {
-            this.checkAnswer();
+            await this.checkAnswer();
           } else if (
             document.getElementById("next-word-btn").style.display !== "none"
           ) {
@@ -618,7 +794,7 @@ class VocabularyApp {
     }
   }
 
-  checkAnswer() {
+  async checkAnswer() {
     const mode = document.getElementById("practice-mode").value;
     const word = this.practiceWords[this.currentPracticeIndex];
     const feedbackEl = document.getElementById("practice-feedback");
@@ -646,15 +822,15 @@ class VocabularyApp {
       switch (mode) {
         case "guess":
           correctAnswer = word.translation;
-          isCorrect = this.checkAnswerMatch(userAnswer, word.translation);
+          isCorrect = await this.checkAnswerMatch(userAnswer, word.translation);
           break;
         case "guess-reverse":
           correctAnswer = word.word;
-          isCorrect = this.checkAnswerMatch(userAnswer, word.word);
+          isCorrect = await this.checkAnswerMatch(userAnswer, word.word);
           break;
         case "pronunciation":
           correctAnswer = word.word;
-          isCorrect = this.checkAnswerMatch(userAnswer, word.word);
+          isCorrect = await this.checkAnswerMatch(userAnswer, word.word);
           break;
       }
     }
@@ -705,7 +881,7 @@ class VocabularyApp {
     }
   }
 
-  checkAnswerMatch(userAnswer, correctAnswer) {
+  async checkAnswerMatch(userAnswer, correctAnswer) {
     if (!correctAnswer) return false;
 
     const normalizedUser = userAnswer.toLowerCase().trim();
@@ -713,6 +889,18 @@ class VocabularyApp {
 
     // Direct match
     if (normalizedUser === normalizedCorrect) return true;
+
+    // Language character matching - check if they represent the same meaning
+    console.log(
+      "🔍 Checking language equivalency for:",
+      normalizedUser,
+      "⟷",
+      normalizedCorrect,
+    );
+    if (await this.areLanguageEquivalent(normalizedUser, normalizedCorrect)) {
+      console.log("✅ Language equivalency match found");
+      return true;
+    }
 
     // Split by common separators and check if user answer matches any part
     const separators = [",", ";", "/", "|", " or ", " and "];
@@ -739,6 +927,11 @@ class VocabularyApp {
     for (const possible of possibleAnswers) {
       if (normalizedUser === possible) return true;
 
+      // Language equivalency check for each possible answer
+      if (await this.areLanguageEquivalent(normalizedUser, possible)) {
+        return true;
+      }
+
       // Also check if user answer is contained in the possible answer (for articles like "a", "an", "the")
       if (possible.includes(normalizedUser) && normalizedUser.length >= 2)
         return true;
@@ -751,6 +944,258 @@ class VocabularyApp {
         Math.abs(normalizedUser.length - possible.length) <= 2
       ) {
         return true;
+      }
+    }
+
+    return false;
+  }
+
+  areLanguageEquivalent(userAnswer, correctAnswer) {
+    // Basic hiragana to katakana conversion and vice versa
+    const hiraganaToKatakana = (str) => {
+      return str.replace(/[\u3041-\u3096]/g, (match) => {
+        return String.fromCharCode(match.charCodeAt(0) + 0x60);
+      });
+    };
+
+    const katakanaToHiragana = (str) => {
+      return str.replace(/[\u30A1-\u30F6]/g, (match) => {
+        return String.fromCharCode(match.charCodeAt(0) - 0x60);
+      });
+    };
+
+    // Convert both to hiragana for comparison
+    const userHiragana = katakanaToHiragana(userAnswer);
+    const correctHiragana = katakanaToHiragana(correctAnswer);
+
+    // Check direct hiragana equivalency
+    if (userHiragana === correctHiragana) return true;
+
+    // Convert both to katakana for comparison
+    const userKatakana = hiraganaToKatakana(userAnswer);
+    const correctKatakana = hiraganaToKatakana(correctAnswer);
+
+    // Check direct katakana equivalency
+    if (userKatakana === correctKatakana) return true;
+
+    // Dynamic equivalency check - look through existing vocabulary
+    return this.checkDynamicEquivalency(userAnswer, correctAnswer);
+  }
+
+  async checkDynamicEquivalency(userAnswer, correctAnswer) {
+    // Get all words from database to find patterns
+    const transaction = this.db.transaction(["words"], "readonly");
+    const store = transaction.objectStore("words");
+
+    const allWords = await new Promise((resolve, reject) => {
+      const request = store.getAll();
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+
+    // Enhanced matching for Japanese text
+    for (const word of allWords) {
+      // Direct matches
+      if (userAnswer === word.word && correctAnswer === word.translation) {
+        return true;
+      }
+      if (userAnswer === word.translation && correctAnswer === word.word) {
+        return true;
+      }
+
+      // Check if both user answer and correct answer appear in the same vocabulary entry
+      // This handles cases where both forms exist in your database
+      const wordForms = [word.word, word.translation].map((w) =>
+        w.toLowerCase(),
+      );
+      if (
+        wordForms.includes(userAnswer.toLowerCase()) &&
+        wordForms.includes(correctAnswer.toLowerCase())
+      ) {
+        return true;
+      }
+
+      // Cross-reference check: if userAnswer matches any word and correctAnswer matches its pair
+      if (
+        this.normalizeJapanese(userAnswer) ===
+          this.normalizeJapanese(word.word) &&
+        this.normalizeJapanese(correctAnswer) ===
+          this.normalizeJapanese(word.translation)
+      ) {
+        return true;
+      }
+      if (
+        this.normalizeJapanese(userAnswer) ===
+          this.normalizeJapanese(word.translation) &&
+        this.normalizeJapanese(correctAnswer) ===
+          this.normalizeJapanese(word.word)
+      ) {
+        return true;
+      }
+    }
+
+    // Look for semantic equivalency patterns
+    return this.checkSemanticEquivalency(userAnswer, correctAnswer, allWords);
+  }
+
+  normalizeJapanese(text) {
+    // Convert katakana to hiragana for comparison
+    return text
+      .replace(/[\u30A1-\u30F6]/g, (match) => {
+        return String.fromCharCode(match.charCodeAt(0) - 0x60);
+      })
+      .toLowerCase();
+  }
+
+  checkSemanticEquivalency(userAnswer, correctAnswer, allWords) {
+    // Look for patterns where different forms of the same word appear
+    const userNormalized = this.normalizeJapanese(userAnswer);
+    const correctNormalized = this.normalizeJapanese(correctAnswer);
+
+    // Check if these could be different representations of the same concept
+    for (const word of allWords) {
+      const wordNorm = this.normalizeJapanese(word.word);
+      const transNorm = this.normalizeJapanese(word.translation);
+
+      // If either userAnswer or correctAnswer appears in vocabulary,
+      // check if they share semantic meaning
+      if (
+        userNormalized === wordNorm ||
+        userNormalized === transNorm ||
+        correctNormalized === wordNorm ||
+        correctNormalized === transNorm
+      ) {
+        // Additional heuristics for Japanese word equivalency
+        if (this.areJapaneseWordVariants(userAnswer, correctAnswer)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  areJapaneseWordVariants(word1, word2) {
+    // Check if words share common elements (like same verb stem)
+    const norm1 = this.normalizeJapanese(word1);
+    const norm2 = this.normalizeJapanese(word2);
+
+    // Debug logging for equivalency checking (only when not matching)
+    const shouldLog = norm1 !== norm2;
+
+    // Direct match after normalization
+    if (norm1 === norm2) {
+      return true;
+    }
+
+    // If one is significantly shorter, it might be a stem of the other
+    const longer = norm1.length > norm2.length ? norm1 : norm2;
+    const shorter = norm1.length > norm2.length ? norm2 : norm1;
+
+    // Check if shorter form is contained in longer form (potential stem matching)
+    if (shorter.length >= 2 && longer.includes(shorter)) {
+      return true;
+    }
+
+    // For conjugated forms, check if they share the same beginning
+    if (longer.length > 2 && shorter.length > 2) {
+      const commonLength = Math.min(longer.length - 1, shorter.length - 1, 3);
+      if (
+        longer.substring(0, commonLength) === shorter.substring(0, commonLength)
+      ) {
+        return true;
+      }
+    }
+
+    // Check common hiragana-kanji pairs
+    const commonPairs = {
+      かいしゃ: "会社",
+      がっこう: "学校",
+      せんせい: "先生",
+      がくせい: "学生",
+      しごと: "仕事",
+      でんわ: "電話",
+      でんわばんごう: "電話番号",
+      びょういん: "病院",
+      ぎんこう: "銀行",
+      としょかん: "図書館",
+      こうえん: "公園",
+      えき: "駅",
+      みち: "道",
+      いえ: "家",
+      くるま: "車",
+      でんしゃ: "電車",
+      ひこうき: "飛行機",
+      みずうみ: "湖",
+      やま: "山",
+      かわ: "川",
+      うみ: "海",
+      ばんごう: "番号",
+      じゅうしょ: "住所",
+      なまえ: "名前",
+      ねんれい: "年齢",
+      せいねんがっぴ: "生年月日",
+      こくせき: "国籍",
+    };
+
+    // Check both directions
+    if (commonPairs[word1] === word2 || commonPairs[word2] === word1) {
+      console.log("✅ Common pair match found:", word1, "⟷", word2);
+      return true;
+    }
+
+    // Enhanced compound word analysis
+    if (this.areCompoundWordEquivalents(word1, word2, commonPairs)) {
+      console.log("✅ Compound word equivalency found:", word1, "⟷", word2);
+      return true;
+    }
+
+    console.log("❌ No equivalency found");
+    return false;
+  }
+
+  areCompoundWordEquivalents(word1, word2, commonPairs) {
+    // For compound words, try breaking them down and checking parts
+    const longer = word1.length > word2.length ? word1 : word2;
+    const shorter = word1.length > word2.length ? word2 : word1;
+
+    // If the longer word might be a compound, try to find matching parts
+    if (longer.length >= 4) {
+      // Check if we can build the longer word from known parts
+      for (let i = 2; i <= longer.length - 2; i++) {
+        const part1 = longer.substring(0, i);
+        const part2 = longer.substring(i);
+
+        // Check if both parts have known equivalents
+        const part1Equiv =
+          commonPairs[part1] ||
+          Object.keys(commonPairs).find((key) => commonPairs[key] === part1);
+        const part2Equiv =
+          commonPairs[part2] ||
+          Object.keys(commonPairs).find((key) => commonPairs[key] === part2);
+
+        if (part1Equiv && part2Equiv) {
+          // Try to reconstruct the compound
+          const reconstructed =
+            (typeof part1Equiv === "string" ? part1Equiv : part1) +
+            (typeof part2Equiv === "string" ? part2Equiv : part2);
+
+          if (reconstructed === shorter) {
+            console.log(
+              "🔍 Compound word analysis:",
+              longer,
+              "=",
+              part1,
+              "+",
+              part2,
+              "→",
+              reconstructed,
+              "=",
+              shorter,
+            );
+            return true;
+          }
+        }
       }
     }
 
@@ -1032,7 +1477,7 @@ class VocabularyApp {
           .forEach((btn) => btn.classList.remove("selected"));
         optionBtn.classList.add("selected");
         // Auto-trigger check answer
-        setTimeout(() => this.checkAnswer(), 300);
+        setTimeout(async () => await this.checkAnswer(), 300);
       });
       optionsEl.appendChild(optionBtn);
     });
@@ -1042,12 +1487,507 @@ class VocabularyApp {
 
   speakWord() {
     const word = this.practiceWords[this.currentPracticeIndex];
-    if (this.speechSynthesis && word.word) {
-      const utterance = new SpeechSynthesisUtterance(word.word);
-      utterance.lang = "ja-JP";
-      utterance.rate = 0.8;
-      this.speechSynthesis.speak(utterance);
+    if (!word.word) return;
+
+    // Use enhanced browser TTS with word-specific language detection
+    this.speakWithEnhancedBrowserTTS(word.word);
+  }
+
+  speakWithEnhancedBrowserTTS(text) {
+    if (!this.speechSynthesis) return;
+
+    // Force voice loading if needed
+    if (this.speechSynthesis.getVoices().length === 0) {
+      this.speechSynthesis.getVoices(); // Trigger loading
+      setTimeout(() => this.speakWithEnhancedBrowserTTS(text), 100);
+      return;
     }
+
+    // Detect language of the specific text being spoken
+    const textLang = this.detectTextLanguage(text);
+    const voice = this.selectBestVoiceForLanguage(textLang);
+    console.log(
+      "🔊 Using Enhanced Browser TTS with voice:",
+      voice ? voice.name : "default",
+    );
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = this.getLanguageCode(textLang); // Use text-specific language
+
+    // Voice and language-specific optimized settings
+    const settings = this.getOptimalVoiceSettings(voice, textLang);
+    utterance.rate = settings.rate;
+    utterance.pitch = settings.pitch;
+    utterance.volume = settings.volume;
+
+    // Enhanced voice selection
+    if (voice) {
+      utterance.voice = voice;
+      console.log("🎯 Voice details:", {
+        name: voice.name,
+        lang: voice.lang,
+        localService: voice.localService,
+        detectedTextLang: textLang,
+        quality: this.getVoiceQualityScore(voice, {
+          google: 9,
+          microsoft: 8,
+          apple: 9,
+          samsung: 7,
+          amazon: 8,
+        }),
+      });
+    }
+
+    // Add pronunciation improvements
+    utterance.text = this.preprocessTextForBetterPronunciation(text, textLang);
+
+    // Add audio processing hooks
+    utterance.onstart = () => {
+      this.applyAudioEnhancements();
+      console.log("🎵 Speaking:", utterance.text, "in", textLang);
+    };
+
+    utterance.onend = () => {
+      console.log("✅ Speech completed");
+    };
+
+    // Better error handling with retry
+    utterance.onerror = (event) => {
+      console.error(
+        "❌ Speech synthesis error:",
+        event,
+        "for text:",
+        text,
+        "lang:",
+        textLang,
+      );
+      // Try once more with default voice
+      if (voice) {
+        console.log("🔄 Retrying with default voice...");
+        setTimeout(() => {
+          const retryUtterance = new SpeechSynthesisUtterance(text);
+          retryUtterance.lang = utterance.lang;
+          retryUtterance.rate = utterance.rate;
+          retryUtterance.pitch = utterance.pitch;
+          retryUtterance.volume = utterance.volume;
+          this.speechSynthesis.speak(retryUtterance);
+        }, 100);
+      }
+    };
+
+    // Cancel any ongoing speech first
+    this.speechSynthesis.cancel();
+
+    // Small delay to ensure cancellation is processed
+    setTimeout(() => {
+      this.speechSynthesis.speak(utterance);
+    }, 50);
+  }
+
+  detectTextLanguage(text) {
+    // First check if this exact text appears in our vocabulary database
+    const contextLang = this.getLanguageFromVocabularyContext(text);
+    if (contextLang) {
+      console.log(
+        '🎯 Language from vocabulary context for "' +
+          text +
+          '": ' +
+          contextLang,
+      );
+      return contextLang;
+    }
+
+    // Count characters for each language in the specific text
+    const scores = {
+      ja: this.countJapaneseChars(text),
+      zh: this.countChineseChars(text),
+      ko: this.countKoreanChars(text),
+      en: this.countEnglishChars(text),
+      es: this.countSpanishChars(text),
+      fr: this.countFrenchChars(text),
+      de: this.countGermanChars(text),
+    };
+
+    // Special handling for ambiguous cases (kanji/hanzi that exist in both Japanese and Chinese)
+    if (scores.ja > 0 && scores.zh > 0) {
+      // Use overall vocabulary language bias for ambiguous characters
+      const vocabLang = this.detectedLanguage;
+      if (vocabLang === "ja" || vocabLang === "zh") {
+        console.log(
+          '🔍 Ambiguous text "' +
+            text +
+            '" using vocabulary bias: ' +
+            vocabLang,
+        );
+        return vocabLang;
+      }
+
+      // If no clear bias, check for Japanese-specific indicators
+      if (this.hasJapaneseIndicators(text)) {
+        console.log('🔍 Japanese indicators found in "' + text + '"');
+        return "ja";
+      }
+    }
+
+    // Find the language with highest score
+    const detectedLang = Object.keys(scores).reduce((a, b) =>
+      scores[a] > scores[b] ? a : b,
+    );
+
+    console.log(
+      '🔍 Text language detection for "' + text + '":',
+      scores,
+      "→",
+      detectedLang,
+    );
+    return detectedLang;
+  }
+
+  getLanguageFromVocabularyContext(text) {
+    // Check if this text appears in our vocabulary and what language context it's in
+    if (!this.practiceWords) return null;
+
+    for (const word of this.practiceWords) {
+      if (word.word === text) {
+        // Found the word, analyze its translation to infer language
+        const translation = word.translation.toLowerCase();
+
+        // Japanese vocabulary often has English translations
+        if (/^[a-z\s,]+$/.test(translation)) {
+          // Translation is English, so the word is likely Japanese
+          return "ja";
+        }
+
+        // Check if translation contains Chinese characters
+        if (
+          this.countChineseChars(word.translation) > 0 &&
+          this.countJapaneseChars(word.translation) === 0
+        ) {
+          return "zh";
+        }
+
+        // Check if translation contains Japanese characters
+        if (this.countJapaneseChars(word.translation) > 0) {
+          return "ja";
+        }
+
+        break;
+      }
+
+      if (word.translation === text) {
+        // Text is the translation, analyze the word to infer language
+        if (
+          this.countJapaneseChars(word.word) > this.countChineseChars(word.word)
+        ) {
+          return "ja";
+        }
+        if (
+          this.countChineseChars(word.word) > 0 &&
+          this.countJapaneseChars(word.word) === 0
+        ) {
+          return "zh";
+        }
+        break;
+      }
+    }
+
+    return null;
+  }
+
+  hasJapaneseIndicators(text) {
+    // Look for indicators that suggest Japanese rather than Chinese
+    // Japanese often uses certain readings or combinations
+    const japaneseIndicators = [
+      /[\u3040-\u309F]/, // Contains hiragana
+      /[\u30A0-\u30FF]/, // Contains katakana
+      /[々]/, // Iteration mark more common in Japanese
+    ];
+
+    return japaneseIndicators.some((pattern) => pattern.test(text));
+  }
+
+  selectBestVoiceForLanguage(lang) {
+    const voices = this.speechSynthesis.getVoices();
+
+    // Enhanced quality ranking for voices
+    const voiceQuality = {
+      google: 9,
+      microsoft: 8,
+      apple: 9,
+      samsung: 7,
+      amazon: 8,
+      nuance: 8,
+      cereproc: 7,
+      espeak: 3,
+    };
+
+    // Language-specific preferred voice names
+    const preferredNamesByLang = {
+      ja: [
+        "kyoko",
+        "otoya",
+        "sayaka",
+        "haruka",
+        "japanese female",
+        "japanese male",
+      ],
+      en: [
+        "alex",
+        "samantha",
+        "karen",
+        "daniel",
+        "moira",
+        "english female",
+        "english male",
+      ],
+      zh: ["mei-jia", "liling", "sin-ji", "chinese female", "chinese male"],
+      ko: ["yuna", "korean female", "korean male"],
+      es: ["monica", "jorge", "spanish female", "spanish male"],
+      fr: ["amelie", "thomas", "french female", "french male"],
+      de: ["anna", "yannick", "german female", "german male"],
+    };
+
+    // Get language codes to search for
+    const langCodes = this.getLanguageCodes(lang);
+
+    // Find voices for the specific language
+    const targetLanguageVoices = voices.filter((voice) =>
+      langCodes.some(
+        (code) => voice.lang === code || voice.lang.startsWith(code),
+      ),
+    );
+
+    if (targetLanguageVoices.length === 0) {
+      console.warn("❌ No voices found for language:", lang, "using default");
+      return null;
+    }
+
+    const preferredNames = preferredNamesByLang[lang] || [];
+
+    // Sort by quality score and preferred names
+    targetLanguageVoices.sort((a, b) => {
+      // First priority: Quality score (Google should win here)
+      const scoreA = this.getVoiceQualityScore(a, voiceQuality);
+      const scoreB = this.getVoiceQualityScore(b, voiceQuality);
+
+      if (scoreA !== scoreB) {
+        return scoreB - scoreA;
+      }
+
+      // Second priority: Preferred names
+      const nameScoreA = this.getNamePreferenceScore(a.name, preferredNames);
+      const nameScoreB = this.getNamePreferenceScore(b.name, preferredNames);
+
+      if (nameScoreA !== nameScoreB) {
+        return nameScoreB - nameScoreA;
+      }
+
+      // Third priority: For same quality, prefer local for reliability
+      if (a.localService !== b.localService) {
+        return a.localService ? 1 : -1;
+      }
+
+      return 0;
+    });
+
+    // Debug logging to see all voice scores
+    const voiceDetails = targetLanguageVoices.slice(0, 3).map((voice) => ({
+      name: voice.name,
+      localService: voice.localService,
+      qualityScore: this.getVoiceQualityScore(voice, voiceQuality),
+      nameScore: this.getNamePreferenceScore(voice.name, preferredNames),
+    }));
+
+    console.log("🗣️ Voice selection details:", voiceDetails);
+    console.log(
+      "🗣️ Selected voice:",
+      targetLanguageVoices[0].name,
+      "for language:",
+      lang,
+    );
+    return targetLanguageVoices[0];
+  }
+
+  getLanguageCode(lang) {
+    const langMap = {
+      ja: "ja-JP",
+      en: "en-US",
+      zh: "zh-CN",
+      ko: "ko-KR",
+      es: "es-ES",
+      fr: "fr-FR",
+      de: "de-DE",
+    };
+
+    return langMap[lang] || "ja-JP";
+  }
+
+  getOptimalVoiceSettings(voice, lang) {
+    // Base settings per language
+    const baseSettings = {
+      ja: { rate: 0.4, pitch: 0.8, volume: 1.0 },
+      en: { rate: 0.5, pitch: 0.9, volume: 1.0 },
+      zh: { rate: 0.4, pitch: 0.85, volume: 1.0 },
+      ko: { rate: 0.45, pitch: 0.85, volume: 1.0 },
+      es: { rate: 0.5, pitch: 0.9, volume: 1.0 },
+      fr: { rate: 0.5, pitch: 0.9, volume: 1.0 },
+      de: { rate: 0.45, pitch: 0.85, volume: 1.0 },
+    };
+
+    let settings = { ...(baseSettings[lang] || baseSettings["ja"]) };
+
+    // Adjust based on voice type
+    if (voice) {
+      const voiceName = voice.name.toLowerCase();
+      const isGoogleVoice =
+        voiceName.includes("google") || voiceName.includes("日本語");
+      const isMicrosoftVoice =
+        voiceName.includes("microsoft") ||
+        ["haruka", "sayaka"].some((name) => voiceName.includes(name));
+      const isAppleVoice =
+        voice.localService &&
+        (voiceName.includes("kyoko") ||
+          voiceName.includes("alex") ||
+          voiceName.includes("samantha"));
+
+      if (isGoogleVoice) {
+        // Google voices are high quality and can handle faster speeds
+        settings.rate = Math.min(settings.rate * 1.8, 0.8); // Increase rate by 80%
+        settings.pitch = Math.max(settings.pitch, 0.85); // Slightly higher pitch sounds more natural
+        console.log(
+          "🎯 Using Google voice optimization: rate =",
+          settings.rate,
+        );
+      } else if (isMicrosoftVoice) {
+        // Microsoft voices can handle moderate increase
+        settings.rate = Math.min(settings.rate * 1.4, 0.7);
+        console.log(
+          "🎯 Using Microsoft voice optimization: rate =",
+          settings.rate,
+        );
+      } else if (isAppleVoice) {
+        // Apple voices (like Kyoko) can handle slight increase
+        settings.rate = Math.min(settings.rate * 1.2, 0.6);
+        console.log("🎯 Using Apple voice optimization: rate =", settings.rate);
+      } else {
+        // Generic/unknown voices - keep conservative settings
+        console.log(
+          "🎯 Using conservative voice settings: rate =",
+          settings.rate,
+        );
+      }
+    }
+
+    return settings;
+  }
+
+  // Keep for backward compatibility
+  getLanguageSpecificSettings(lang) {
+    return this.getOptimalVoiceSettings(null, lang);
+  }
+
+  applyAudioEnhancements() {
+    // Resume audio context if suspended (required by some browsers)
+    if (this.audioContext && this.audioContext.state === "suspended") {
+      this.audioContext.resume();
+    }
+
+    // Note: Direct Web Audio processing of speechSynthesis is limited
+    // This is more about preparing the audio context and ensuring optimal playback
+    // For real-time processing, we'd need to capture the audio stream
+  }
+
+  getLanguageCodes(lang) {
+    const langMap = {
+      ja: ["ja-JP", "ja"],
+      en: ["en-US", "en-GB", "en"],
+      zh: ["zh-CN", "zh-TW", "zh"],
+      ko: ["ko-KR", "ko"],
+      es: ["es-ES", "es-MX", "es"],
+      fr: ["fr-FR", "fr-CA", "fr"],
+      de: ["de-DE", "de"],
+    };
+
+    return langMap[lang] || ["ja-JP", "ja"];
+  }
+
+  getNamePreferenceScore(voiceName, preferredNames) {
+    const name = voiceName.toLowerCase();
+    for (let i = 0; i < preferredNames.length; i++) {
+      if (name.includes(preferredNames[i])) {
+        return preferredNames.length - i;
+      }
+    }
+    return 0;
+  }
+
+  getVoiceQualityScore(voice, qualityMap) {
+    const name = voice.name.toLowerCase();
+
+    // Check for explicit provider matches first
+    for (const [provider, score] of Object.entries(qualityMap)) {
+      if (name.includes(provider)) {
+        return score;
+      }
+    }
+
+    // Special handling for Google voices that might not have "google" in the name
+    if (
+      name.includes("google") ||
+      name.includes("日本語") ||
+      (!voice.localService &&
+        (name.includes("neural") || name.includes("premium")))
+    ) {
+      return 9; // High quality for Google/premium voices
+    }
+
+    // Default scoring based on local vs network
+    return voice.localService ? 6 : 5;
+  }
+
+  preprocessTextForBetterPronunciation(text, lang = "ja") {
+    let processed = text;
+
+    if (lang === "ja") {
+      // Japanese-specific preprocessing
+      processed = processed.replace(/([。、])/g, "$1 ");
+
+      // Add subtle breaks for long compound words (4+ characters)
+      if (processed.length >= 4) {
+        processed = processed.replace(
+          /([あ-ん])(る|す|ます|した|して)/,
+          "$1 $2",
+        );
+      }
+
+      // Handle special Japanese pronunciation cases
+      const jpPronunciationMap = {
+        ー: "", // Remove long vowel marks that might confuse TTS
+      };
+
+      for (const [original, replacement] of Object.entries(
+        jpPronunciationMap,
+      )) {
+        processed = processed.replace(new RegExp(original, "g"), replacement);
+      }
+    } else if (lang === "en") {
+      // English-specific preprocessing
+      // Add commas for natural pauses in long sentences
+      if (processed.length > 20) {
+        processed = processed.replace(/\b(and|or|but|so)\b/g, ", $1");
+      }
+    } else if (lang === "zh") {
+      // Chinese-specific preprocessing
+      processed = processed.replace(/([，。！？])/g, "$1 ");
+    } else if (lang === "es" || lang === "fr") {
+      // Romance language preprocessing
+      processed = processed.replace(/([,.!?])/g, "$1 ");
+    }
+
+    // Universal improvements
+    processed = processed.replace(/\s+/g, " ").trim(); // Clean up extra spaces
+
+    return processed;
   }
 
   startListening() {

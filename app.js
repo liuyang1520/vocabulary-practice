@@ -1241,10 +1241,6 @@ class VocabularyApp {
   }
 
   nextWord() {
-    // Store current scroll position
-    const scrollPosition =
-      window.pageYOffset || document.documentElement.scrollTop;
-
     this.currentPracticeIndex++;
 
     if (
@@ -1255,11 +1251,6 @@ class VocabularyApp {
     } else {
       this.updateProgress();
       this.showCurrentWord();
-
-      // Restore scroll position after content changes
-      requestAnimationFrame(() => {
-        window.scrollTo(0, scrollPosition);
-      });
     }
   }
 

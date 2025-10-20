@@ -451,7 +451,12 @@ h2 {
   border-radius: 10px;
   padding: 30px;
   background: white;
-  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+#practice-content {
+  min-height: 400px;
   display: flex;
   flex-direction: column;
 }
@@ -462,6 +467,7 @@ h2 {
   background: #f8f9fa;
   border-radius: 10px;
   border: 1px solid #e9ecef;
+  flex-shrink: 0;
 }
 
 .progress-info {
@@ -524,7 +530,6 @@ h2 {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 300px;
 }
 
 .practice-question h3 {
@@ -598,9 +603,11 @@ h2 {
   justify-content: center;
   align-items: center;
   gap: 15px;
-  margin-top: 20px;
+  margin-top: auto;
+  padding-top: 20px;
   flex-wrap: wrap;
-  min-height: 60px;
+  min-height: 70px;
+  flex-shrink: 0;
 }
 
 #practice-controls .btn {
@@ -783,10 +790,11 @@ h2 {
 #practice-feedback {
   margin-top: 20px;
   text-align: center;
-  min-height: 80px;
+  min-height: 140px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .feedback {
@@ -1071,6 +1079,16 @@ h2 {
   #practice-controls {
     flex-direction: column;
     gap: 12px;
+    min-height: auto;
+  }
+
+  #practice-content {
+    min-height: 350px;
+  }
+
+  #practice-feedback {
+    height: auto;
+    min-height: 100px;
   }
 
   .nav-btn {

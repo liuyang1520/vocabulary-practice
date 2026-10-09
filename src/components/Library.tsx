@@ -344,11 +344,19 @@ export default function Library({ words, state, onBookmark, onImport, onDelete, 
           </a>{' '}
           with independently selected review words. These are unofficial study collections; exact
           words and unit placement in your course may differ.{' '}
-          <a href="/licenses/duolingo-community-MIT.txt" target="_blank" rel="noreferrer">
+          <a
+            href={`${import.meta.env.BASE_URL}licenses/duolingo-community-MIT.txt`}
+            target="_blank"
+            rel="noreferrer"
+          >
             Community license ↗
           </a>
           {' · '}
-          <a href="/licenses/vocabulary-sources.txt" target="_blank" rel="noreferrer">
+          <a
+            href={`${import.meta.env.BASE_URL}licenses/vocabulary-sources.txt`}
+            target="_blank"
+            rel="noreferrer"
+          >
             Vocabulary attribution ↗
           </a>
         </p>

@@ -118,7 +118,7 @@ export default function App() {
         </a>
         <header className="site-header">
           <div className="header-inner">
-            <a href="/" className="brand" aria-label="Kotoba home">
+            <a href={import.meta.env.BASE_URL} className="brand" aria-label="Kotoba home">
               <span className="brand-mark" aria-hidden="true" lang="ja">
                 言
               </span>
@@ -613,7 +613,7 @@ export default function App() {
         </main>
         <footer className="site-footer">
           <div>
-            <a className="footer-brand" href="/">
+            <a className="footer-brand" href={import.meta.env.BASE_URL}>
               kotoba<span className="accent">.</span>
             </a>
             <span>Words become worlds.</span>

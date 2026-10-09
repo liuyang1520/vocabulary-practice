@@ -21,6 +21,21 @@ pnpm preview    # Preview the production build
 
 The production site is generated in `dist/` and can be served by any static web server.
 
+## GitHub Pages
+
+The site is hosted at https://liuyang1520.github.io/vocabulary-practice/. Vite's `base` is
+`/vocabulary-practice/` so built assets, the favicon, home links, and license links resolve inside the
+repository's Pages path.
+
+In the GitHub repository, go to **Settings → Pages → Build and deployment → Source** and select
+**GitHub Actions**. The workflow in [.github/workflows/deploy.yml](.github/workflows/deploy.yml)
+installs the pinned pnpm dependencies, tests and builds the app, and publishes **only `dist/`** on
+pushes to `main`. It can also be run manually from the Actions tab.
+
+Publishing the repository root directly serves the development `index.html`, which references
+`/src/main.tsx` and cannot run on a static host. Deploy the build output instead. For hosting at a
+domain root, build with `pnpm build --base=/`.
+
 ## Practice
 
 - Flashcards with self-assessed recall, multiple choice, and typed answers.
@@ -84,4 +99,4 @@ The header and reading column are optional. Legacy `Word,Meaning` and `word,tran
 
 `pnpm-workspace.yaml` sets `minimumReleaseAge: 10080` (**seven days**) for direct and transitive dependencies, with strict handling of missing release timestamps and no age exemptions. Exotic transitive sources are blocked. Dependency scripts require explicit approval in the project’s allowlist; the current stack requires none. Exact package versions and the pnpm lockfile are committed. Keep the release-age policy active when adding or updating dependencies; it reduces exposure to newly published compromised releases, but is not a guarantee of safety.
 
-The old vanilla JavaScript app, static-server dependency, deployment configuration, and outdated documentation have been replaced. The project has no hosting-provider dependency.
+The old vanilla JavaScript app, static-server dependency, and outdated documentation have been replaced. The app can be served by any static host; the included workflow publishes it to GitHub Pages.

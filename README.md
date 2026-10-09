@@ -1,213 +1,87 @@
-# 🎯 Vocabulary Practice App
+# Kotoba
 
-A modern, comprehensive vocabulary practice web application with multiple study modes, voice features, and smart progress tracking. Perfect for language learning with a beautiful, responsive interface.
+A frontend-only Japanese vocabulary practice app built with React, TypeScript, Vite, Tailwind CSS, and Radix UI. The design takes inspiration from [TypeUI](https://www.typeui.sh/): clear typography, simple buttons, and quiet bordered surfaces, with a warm red accent. Geist is bundled locally; no external font requests are needed.
 
-## ✨ Features
+## Run locally
 
-### 📚 Multiple Practice Modes
+Use Node.js 22.12 or newer and pnpm 10.34.1 (pinned in `package.json`). With Corepack available, run `corepack enable` to activate pnpm.
 
-- **Type Translation** (Word → Meaning): See the word, type the translation
-- **Type Word** (Meaning → Word): See the meaning, type the word  
-- **Multiple Choice** (Word → Meaning): Choose from 4 options
-- **Multiple Choice** (Meaning → Word): Reverse multiple choice
-- **Pronunciation Practice**: Real speech recognition validation with system voice
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+```
 
-### 🎯 Smart Learning Features
+Open the URL printed by Vite. There are no environment variables, accounts, API keys, or backend services to configure.
 
-- **Wrong Words Tracking**: Automatically tracks and stores incorrect answers
-- **Focused Practice**: Practice only words you've gotten wrong
-- **Flexible Sessions**: Choose 5, 10, 15, 20, 25 words or practice all
-- **Real-time Progress**: Visual progress bar with live score tracking
-- **Smart Answer Matching**: Accepts partial answers, handles typos, and multiple valid translations
-- **Session Completion**: Clear "Start New Practice" and setup options after each session
+```sh
+pnpm test       # CSV parsing, answer matching, study logic, and vocabulary integrity
+pnpm build      # TypeScript check and production build
+pnpm preview    # Preview the production build
+```
 
-### 🗣️ Voice Features
+The production site is generated in `dist/` and can be served by any static web server.
 
-- **Text-to-Speech**: High-quality pronunciation playback (optimized for Japanese)
-- **Speech Recognition**: Accurate pronunciation validation using Web Speech API
-- **Real-time Transcription**: Voice input automatically fills answer fields
-- **Pronunciation Scoring**: Validates your speech against the correct word
+## Practice
 
-### 💾 Data Management
+- Flashcards with self-assessed recall, multiple choice, and typed answers.
+- Japanese → English and English → Japanese directions; 5, 10, 20, or 30 words per session.
+- Collection, saved-word, and missed-word practice; search and paginate the vocabulary library. The Section 4 companion has a topic selector for all 60 units, initially set to unit 57.
+- Local progress, completed-session history, a daily goal, and a study streak. A word is marked learned after at least three correct answers or positive flashcard ratings, with the latest answer correct.
+- Light/dark themes, optional kana readings, and Japanese pronunciation with voice selection, speed controls, and a preview in Study settings. Automatic selection prefers enhanced/natural voices, Google Japanese, and standard Japanese system voices such as Kyoko over novelty voices. Chrome’s asynchronously loaded voice list is handled before playback.
+- Personal vocabulary from pasted text or CSV, plus export of any filtered list. Personal words can be removed from the library.
 
-- **Easy CSV Upload**: Import vocabulary from simple 2-column CSV files (word, translation)
-- **Local Storage**: All data stored securely in browser's IndexedDB with namespace isolation
-- **Vocabulary Management**: Add, edit, and delete words with a clean interface
-- **Comprehensive Statistics**: Track sessions, accuracy, total questions, and wrong words
-- **Offline Ready**: Works completely offline, no server required
+Progress, bookmarks, preferences, and personal vocabulary live in versioned browser local storage. Clearing site data removes them. They do not sync across browsers or devices. Bundled word lists require no remote service at runtime; pronunciation support varies by browser and device. No service worker or offline-install claim is made.
 
-### 🎨 Modern Design
+## Default Japanese vocabulary
 
-- **Beautiful Interface**: Modern gradient design with glass-morphism effects
-- **Responsive Layout**: Perfect on desktop, tablet, and mobile devices
-- **Smooth Animations**: Subtle transitions and hover effects for premium feel
-- **Custom Favicon**: Professional branding with gradient icon
-- **Accessibility**: High contrast, clear typography, and intuitive navigation
+The app includes **4,136 unique terms**, preserving the original 1,448 IDs so existing bookmarks and word progress continue to work:
 
-## CSV Format
+| Study level                            | Words | Source                                                                         |
+| -------------------------------------- | ----: | ------------------------------------------------------------------------------ |
+| First words · Beginner                 |   115 | Community Duolingo Japanese section 1 export                                   |
+| Everyday Japanese · Elementary         |   620 | Community section 2 export, partial coverage (source units 11–29)              |
+| A wider vocabulary · Extended practice | 3,210 | Original export + dictionary-attested vocabulary from a legacy Duolingo course |
+| Section 4 companion · Unit topics      |   523 | Independently curated review words for the 2026 Section 4 unit topics          |
 
-Your CSV file should have the following columns:
+The Section 4 companion overlaps the other collections: 332 of its words also appear in an earlier collection. Its 60 unit titles follow the [Japanese-from-English 1,030-unit course outline](https://duolingodata.com/dat/jafen1030.html#section4), dated March 5, 2026. Unit 57 is “Reduce waste at home.” Words in these topic lists are independently selected companion vocabulary, **not a verified export of the words introduced in each Duolingo lesson**. Duolingo has different course versions; titles and vocabulary may differ in your account.
+
+These are unofficial study collections, not certified proficiency or JLPT levels. The first two collections use older section snapshots. The third is extended vocabulary, not an official section 3. The legacy course source records actual Duolingo vocabulary and original skill names, but does not establish placement in the current path.
+
+Sources and processing:
+
+- [Cerno-b/anki-duolingo-japanese](https://github.com/Cerno-b/anki-duolingo-japanese), commit `b273ad67570c3537cd053981d92e90643f975273`, MIT. All 1,447 terms from this project’s original export are retained.
+- [liuch/duolingo_courses_overview](https://github.com/liuch/duolingo_courses_overview), commit `922959f5631b0475cb408c042fa2db0683706c1b`, CC0. The Japanese version 4 snapshot adds 2,497 common, dictionary-attested terms. Individual kana/kanji teaching fragments and ambiguous homophones are excluded; source skill names are retained.
+- [JMdict](https://www.edrdg.org/jmdict/j_jmdict.html), copyright the Electronic Dictionary Research and Development Group, CC BY-SA 4.0. Readings and English glosses use [jmdict-simplified](https://github.com/scriptin/jmdict-simplified), pinned release `3.6.2+20260928191014`. Spelling and reading restrictions are respected. Some glosses are clarified for their companion topic; for example, 分別 is ぶんべつ, waste sorting.
+- Section 4 topic word selections are maintained in `src/data/section4-topics.json`. Every topic word resolves to one stable ID in the bundled vocabulary. Matching words share bookmarks and progress across collections.
+
+The combined vocabulary data, including dictionary adaptations, is distributed under CC BY-SA 4.0; this applies to the data, not the application code. Source notices and full license texts are in [public/licenses/vocabulary-sources.txt](public/licenses/vocabulary-sources.txt) and linked from the library. The app ships only the selected terms in `src/data/japanese.json` and `src/data/japanese-extended.json`, not the full dictionary. Bundled readings are provided for 4,017 terms; the other 119 retain their source text without guessed readings.
+
+To repeat the data update using the pinned public sources:
+
+```sh
+python3 scripts/update-vocabulary.py
+pnpm exec prettier --write src/data
+pnpm test
+```
+
+The updater requires Python 3 and network access, with no third-party Python packages. It preserves existing IDs and manually clarified definitions. Source vocabulary and dictionary downloads happen only when maintaining the bundled data.
+
+For better pronunciation on macOS, add a Japanese voice in **System Settings → Accessibility → Read & Speak → System voice**, reopen Chrome, then select and preview it in Kotoba’s Study settings. Installed voices work locally; a browser-supplied online voice may require internet access. Audio quality still depends on the voices Chrome exposes. No paid TTS service or API key is required.
+
+This app is not affiliated with Duolingo.
+
+## Personal CSV format
 
 ```csv
-word,translation
-hello,こんにちは
-thank you,ありがとう
-goodbye,さようなら
+word,meaning,reading
+猫,"cat, cats",ねこ
+ありがとう,thank you,
 ```
 
-- **word**: The vocabulary word
-- **translation**: The meaning (can include multiple answers separated by commas)
+The header and reading column are optional. Legacy `Word,Meaning` and `word,translation` headers also work. Quote any field containing commas, line breaks, or double quotes (escape a quote as `""`). Imports are validated before adding any words; duplicate personal written forms are skipped. Limits: 1 MB per file, 500 characters per field, and 5,000 personal words.
 
-## Deployment
+## Dependency policy
 
-### Deploy to Vercel
+`pnpm-workspace.yaml` sets `minimumReleaseAge: 10080` (**seven days**) for direct and transitive dependencies, with strict handling of missing release timestamps and no age exemptions. Exotic transitive sources are blocked. Dependency scripts require explicit approval in the project’s allowlist; the current stack requires none. Exact package versions and the pnpm lockfile are committed. Keep the release-age policy active when adding or updating dependencies; it reduces exposure to newly published compromised releases, but is not a guarantee of safety.
 
-1. **Connect to Vercel**:
-
-   ```bash
-   npm install -g vercel
-   vercel login
-   ```
-
-2. **Deploy**:
-
-   ```bash
-   vercel --prod
-   ```
-
-3. **Or use Vercel Dashboard**:
-   - Go to [vercel.com](https://vercel.com)
-   - Import your GitHub repository
-   - Vercel will automatically detect and deploy
-
-### Alternative Deployment Options
-
-**Netlify**:
-
-- Drag and drop the entire folder to [netlify.com/drop](https://netlify.com/drop)
-
-**GitHub Pages**:
-
-1. Create a GitHub repository (must be public)
-2. Push your code to the repository
-3. Go to Settings → Pages → Source → Deploy from branch
-4. Select 'main' branch and '/ (root)' folder
-5. Your site will be live at `https://yourusername.github.io/repository-name`
-
-**Any Static Host**:
-
-- Upload all files to any web server
-- No build process required - pure HTML/CSS/JS
-
-## GitHub Pages Deployment (Detailed)
-
-### Quick Setup
-
-1. **Initialize git repository**:
-
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   ```
-
-2. **Create GitHub repository**:
-   - Go to github.com → New repository
-   - Name it (e.g., `vocabulary-practice`)
-   - Make it **Public** (required for free GitHub Pages)
-   - Don't initialize with README
-
-3. **Push to GitHub**:
-
-   ```bash
-   git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
-   git branch -M main
-   git push -u origin main
-   ```
-
-4. **Enable GitHub Pages**:
-   - Repository → Settings → Pages
-   - Source: "Deploy from a branch"
-   - Branch: `main`, Folder: `/ (root)`
-   - Save
-
-Your site will be live at: `https://YOUR_USERNAME.github.io/YOUR_REPO_NAME`
-
-### Automatic Deployment
-
-The included GitHub Actions workflow automatically deploys on every push to main branch.
-
-## Local Development
-
-1. **Install dependencies** (optional, for local server):
-
-   ```bash
-   npm install
-   ```
-
-2. **Run locally**:
-   ```bash
-   npm run dev
-   ```
-   Or simply open `index.html` in your browser.
-
-## Browser Compatibility
-
-- **Recommended**: Chrome, Edge (best voice features support)
-- **Supported**: Firefox, Safari
-- **Voice Features**: Require modern browsers with Web Speech API support
-
-## File Structure
-
-```
-jp-words/
-├── index.html          # Main application
-├── app.js             # Application logic
-├── style.css          # Styling
-├── package.json       # Deployment configuration
-├── vercel.json        # Vercel deployment settings
-└── README.md          # This file
-```
-
-## Features Overview
-
-### Practice Modes
-
-- **5 different practice types** for varied learning
-- **Session customization** (length, order, word source)
-- **Real-time progress** with visual progress bar
-- **Smart answer checking** accepts multiple valid answers
-
-### Data Persistence
-
-- **IndexedDB storage** for offline capability
-- **Wrong words tracking** for focused review
-- **Statistics tracking** across all sessions
-- **Import/Export** via CSV files
-
-### Voice Integration
-
-- **Speech-to-text** for pronunciation practice
-- **Text-to-speech** for audio playback
-- **Language-specific** recognition (Japanese support)
-
-## 🚀 Quick Start
-
-1. **Download** or clone this repository
-2. **Open** `index.html` in your browser (or deploy to any static host)
-3. **Upload** a CSV file with your vocabulary (word, translation format)
-4. **Start practicing** with any of the 5 practice modes!
-
-## 🛠️ Technical Details
-
-- **Frontend Only**: Pure HTML, CSS, JavaScript - no build process needed
-- **Modern CSS**: Uses CSS Grid, Flexbox, and advanced features like backdrop-filter
-- **Web APIs**: Leverages Speech Recognition, Speech Synthesis, and IndexedDB
-- **No Backend Required**: All data stored locally with IndexedDB
-- **Progressive Web App Ready**: Can be installed as a standalone app
-- **Cross-browser**: Works on Chrome, Firefox, Safari, and Edge
-- **Mobile Optimized**: Fully responsive with touch-friendly interface
-
-## License
-
-MIT License - Feel free to use and modify for your learning needs.
+The old vanilla JavaScript app, static-server dependency, deployment configuration, and outdated documentation have been replaced. The project has no hosting-provider dependency.

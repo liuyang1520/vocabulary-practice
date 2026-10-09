@@ -1,0 +1,49 @@
+Kotoba vocabulary sources and attribution
+
+Combined vocabulary data and adaptations: CC BY-SA 4.0.
+https://creativecommons.org/licenses/by-sa/4.0/
+Full text: /licenses/JMdict-CC-BY-SA-4.0.txt
+This data license does not apply to the application code.
+
+JMdict
+Copyright the Electronic Dictionary Research and Development Group (EDRDG).
+https://www.edrdg.org/jmdict/j_jmdict.html
+https://www.edrdg.org/edrdg/licence.html
+CC BY-SA 4.0. English glosses and kana readings are adapted from JMdict.
+JSON conversion: scriptin/jmdict-simplified
+https://github.com/scriptin/jmdict-simplified
+Pinned release: 3.6.2+20260928191014 (September 28, 2026).
+Changes: selected course terms only; deduplicated written forms; selected
+English senses respecting reading/spelling restrictions; clarified selected
+glosses for the companion topic. Dictionary entry IDs are retained where used.
+
+Legacy Duolingo vocabulary / Japanese from English, version 4, 131 skills
+Source author: liuch
+https://github.com/liuch/duolingo_courses_overview
+Commit: 922959f5631b0475cb408c042fa2db0683706c1b
+CC0 1.0. Full text: /licenses/duolingo-legacy-CC0.txt
+Changes: retained common dictionary-attested terms of two or more characters;
+omitted individual character teaching fragments and ambiguous homophones;
+added JMdict readings and definitions. This is a legacy course snapshot, not
+a mapping of vocabulary to current Duolingo sections or units.
+
+Community Duolingo section 1 and partial section 2 export
+Source author: Cerno-b
+https://github.com/Cerno-b/anki-duolingo-japanese
+Commit: b273ad67570c3537cd053981d92e90643f975273
+MIT. Full notice: /licenses/duolingo-community-MIT.txt
+Changes: removed HTML and duplicates; clarified selected starter definitions.
+
+Original project vocabulary
+The project's 1,447-term Duolingo export is retained in the combined list.
+
+Section 4 companion
+60 topic word selections are independently curated for Kotoba, not copied
+lesson word lists. They follow the factual unit goals in this community
+Japanese-from-English course outline, dated March 5, 2026:
+https://duolingodata.com/dat/jafen1030.html#section4
+The selections are reviewed with JMdict and adapted to their topic context.
+These companion lists are not a verified export of words introduced by unit.
+Duolingo course versions, unit placement, and vocabulary may differ.
+
+Kotoba is not affiliated with Duolingo.

@@ -1,0 +1,87 @@
+{
+  "generatedWith": "Built-in image_gen tool",
+  "collection": "Section 4 · Unit 57 · Reduce waste at home",
+  "style": "Cute colored-pencil and gouache on cream paper",
+  "prompts": [
+    {
+      "slug": "trash",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: A small tidy cluster of everyday discarded paper, an empty carton and a crumpled wrapper beside a small household trash bin. Make discarded rubbish the clear subject."
+    },
+    {
+      "slug": "sorting",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: Two hands carefully separating an empty metal can, a glass bottle, and paper into three different recycling bins. Each bin has only a simple pictogram of its matching material. Clear organized sorting action."
+    },
+    {
+      "slug": "resources",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: A neat group of reusable raw materials: a small stack of paper, an aluminum can, and a glass bottle, with a small green seedling. A circular arrangement suggests valuable resources."
+    },
+    {
+      "slug": "recycling",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: An aluminum can and a paper carton following a prominent circular three-arrow recycling loop into new useful material. Focus on the processing cycle, with clear arrows, no lettering."
+    },
+    {
+      "slug": "reuse",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: An empty glass jam jar given a second life as a pencil holder, containing colorful pencils. A small curved arrow connects an identical empty jar to the pencil-filled jar."
+    },
+    {
+      "slug": "reduce",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: A visual before-and-after: a tall stack of five unnecessary disposable cups on the left, a much shorter stack of two cups on the right, connected by a downward-sloping arrow. Clear meaning of reducing an amount."
+    },
+    {
+      "slug": "throw-away",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: A hand dropping one crumpled paper ball into a small open household waste bin. Show a clear downward movement arrow. Only a little paper waste."
+    },
+    {
+      "slug": "saving",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: A hand turning off a dripping water tap, with a small water droplet and a closed wallet nearby to suggest saving water and resources. The turning action should be unambiguous."
+    },
+    {
+      "slug": "waste",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: An unattended tap left running, with clean water needlessly flowing into a sink and down the drain. Tiny worried water-drop character nearby. Clearly show waste of resources."
+    },
+    {
+      "slug": "environment",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: A small round globe with a thriving miniature forest, clean flowing water, and a tiny house, gently held by two hands. Emphasize environment and surroundings."
+    },
+    {
+      "slug": "container",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: One empty reusable food-storage container with rounded corners, its lid propped beside it, and a few blueberries inside to demonstrate the hollow storage space."
+    },
+    {
+      "slug": "packaging",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: A plain cardboard parcel surrounded by partly peeled-back wrapping paper and protective paper cushioning. Show the wrapping as a distinct outer layer around a box."
+    },
+    {
+      "slug": "food-scraps",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: A small kitchen compost caddy holding recognizable banana peel, carrot tops, apple core, and vegetable scraps. The scraps are cleanly and charmingly drawn, not disgusting."
+    },
+    {
+      "slug": "burnable-trash",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: A small pile of crumpled used tissues and soiled paper beside a separate simple orange flame pictogram floating inside a circle. The pictogram explains burnable waste; no actual fire or burning scene."
+    },
+    {
+      "slug": "nonburnable-trash",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: A broken ceramic mug and a bent metal spoon beside a separate simple flame pictogram crossed with a diagonal red line, floating inside a circle. The pictogram explains nonburnable waste, no actual fire."
+    },
+    {
+      "slug": "paper",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: A softly curved sheet of clean ivory-white paper and two stacked sheets underneath. One gently folded corner. Paper is the only main subject."
+    },
+    {
+      "slug": "can",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: One empty unlabeled aluminum drink can with a visible ring-pull opening and subtle silver reflections, centered and clearly metallic."
+    },
+    {
+      "slug": "glass-bottle",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: One empty unlabeled green-tinted glass bottle with a clearly glass neck, see-through body and soft translucent highlights, no plastic cap or labels."
+    },
+    {
+      "slug": "plastic-bottle",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: One empty transparent ridged PET plastic water bottle with a pale blue screw cap, realistic subtle crinkles and clearly plastic molded ridges, centered, no label."
+    },
+    {
+      "slug": "trash-bag",
+      "prompt": "Use case: scientific-educational. Asset type: individual Japanese vocabulary memory illustration. Create one square full-frame illustration. Style: cute tasteful colored-pencil and gouache illustration, soft cream paper background, warm muted colors with sage green and terracotta accents, subtle grain, soft shadows, simple clear silhouette, high clarity at small size. Composition: centered subject with generous quiet margins, no decorative clutter. No text, no letters, no numbers, no Japanese or Chinese characters, no logo or watermark. Subject: One closed semi-translucent household rubbish bag tied at the top, softly rounded, with subtle silhouettes of paper rubbish inside. Make it clearly a bag, not a bin."
+    }
+  ]
+}

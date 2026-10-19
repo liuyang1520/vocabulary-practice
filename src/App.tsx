@@ -28,6 +28,7 @@ import ProgressPage from './components/ProgressPage';
 import ImportWords from './components/ImportWords';
 import Settings from './components/Settings';
 import Pronunciation from './components/Pronunciation';
+import MemoryGuide from './components/MemoryGuide';
 import { SpeechProvider } from './components/Speech';
 
 const featuredWord = defaultWords.find((word) => word.japanese === 'おちゃ')!;
@@ -416,6 +417,7 @@ export default function App() {
                     </div>
                   </div>
                 </section>
+                <MemoryGuide />
                 <section className="practice-setup" id="practice-setup">
                   <div className="setup-intro">
                     <span className="eyebrow">02 — MAKE IT YOUR PRACTICE</span>

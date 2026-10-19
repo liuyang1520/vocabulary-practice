@@ -47,6 +47,70 @@ domain root, build with `pnpm build --base=/`.
 
 Progress, bookmarks, preferences, and personal vocabulary live in versioned browser local storage. Clearing site data removes them. They do not sync across browsers or devices. Bundled word lists require no remote service at runtime; pronunciation support varies by browser and device. No service worker or offline-install claim is made.
 
+## Visual memory aids
+
+Every bundled word has a memory aid with sourced Japanese reading chunks, dictionary-backed
+kanji meaning cues where applicable, and a recall prompt. All **115 beginner words** and **20 words
+in Section 4, unit 57 (“Reduce waste at home”)** also have original Chinese meaning cues and short
+Japanese practice phrases with readings and English translations. Matching kana/kanji spellings
+can share notes when dictionary entry, reading, and intended meaning agree. Personal imports have
+a general strategy matched to their writing system.
+
+In practice, the aid appears after revealing a flashcard or checking an answer in either direction.
+In Vocabulary, use a word’s lightbulb button to open its memory aid. Illustrations are being extended
+across the catalog in resumable batches; only saved local images are displayed. Words without a
+confirmed reading retain their source text without a guessed reading.
+
+Illustrations currently cover **2,004 of 4,136 words**. The remaining **2,132 words** keep their text
+memory aids, with illustration prompts preserved in the catalog for continued generation.
+
+Open **“Make Japanese stick”** on the practice or vocabulary page for a simple routine: connect the
+meaning through Chinese or English, listen to the Japanese reading, picture one scene, then cover
+the answer and recall it. A suggested manual review schedule is later today, tomorrow, in three
+days, and in a week; revisit difficult words sooner. These are suggestions, not automated reminders
+or a spaced-repetition scheduler. Familiar characters are meaning cues; always check the Japanese
+definition and learn its reading separately. See [NINJAL on Japanese and Chinese readings](https://kotoba.ninjal.ac.jp/qa/yokuaru/qa-58/)
+and [Karpicke & Roediger’s vocabulary recall study](https://doi.org/10.1126/science.1152408).
+
+Illustrations use the built-in image generation tool with a consistent colored-pencil and gouache
+style on cream paper. Final 512-pixel WebP assets are in `public/illustrations/unit57/` and
+`public/illustrations/vocabulary/`. The full prompt queue, filenames, and shared spelling variants
+are recorded in [public/illustrations/catalog.json](public/illustrations/catalog.json).
+Images are bundled locally and require no API key or external image requests at runtime.
+Original word-specific notes are maintained in `src/data/memory-notes.ts` and
+`src/data/unit57-memory.ts`, separately from the source vocabulary.
+
+`src/data/memory-lexicon.json` selects word classes from JMdict and up to two English character
+meanings from KANJIDIC2, using the same pinned `jmdict-simplified` release as the vocabulary data.
+Character meanings are learning cues, not literal etymologies or Chinese translations. Dictionary
+credits and adaptation details are included in `public/licenses/vocabulary-sources.txt`.
+
+To inspect and resume illustration coverage:
+
+```sh
+python3 scripts/illustrations.py prepare
+python3 scripts/illustrations.py pending --limit 64
+python3 scripts/illustrations.py refresh
+python3 scripts/illustrations.py check-complete
+```
+
+Generate each pending prompt through Codex’s built-in image tool, then save its output using
+`python3 scripts/illustrations.py import --word-id 'duo:…' --source /path/to/generated.png`.
+The importer uses Pillow for WebP optimization; preparation and status checks use Python’s standard
+library. These scripts never call a model API. Ready files are preserved, and `check-complete` exits
+with a failure until every bundled word resolves to a saved image. Equivalent spellings share an
+image when the dictionary entry, reading, and intended meaning agree. Explicitly reviewed
+equivalents for half-hour spellings and inanimate-existence phrases also share illustrations.
+
+For visual review, `python3 scripts/illustrations.py review --limit 64` creates contact sheets and
+a review receipt under `tmp/imagegen/`. Inspect the sheets before recording the receipt with
+`python3 scripts/illustrations.py mark-reviewed --receipt /path/to/receipt.json`. Revisions use
+new filenames. Track selected images; keep superseded variants and review files locally under
+`tmp/imagegen/`.
+
+To regenerate the selected lexical cues from local pinned dictionary files, run
+`python3 scripts/extract-memory-lexicon.py --dictionary /path/to/jmdict.json --kanjidic /path/to/kanjidic.json`.
+
 ## Default Japanese vocabulary
 
 The app includes **4,136 unique terms**, preserving the original 1,448 IDs so existing bookmarks and word progress continue to work:

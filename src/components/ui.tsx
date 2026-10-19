@@ -77,18 +77,20 @@ export function Modal({
   title,
   description,
   children,
+  onCloseAutoFocus,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
   description: string;
   children: ReactNode;
+  onCloseAutoFocus?: ComponentProps<typeof Dialog.Content>['onCloseAutoFocus'];
 }) {
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="modal-overlay" />
-        <Dialog.Content className="modal-content">
+        <Dialog.Content className="modal-content" onCloseAutoFocus={onCloseAutoFocus}>
           <div className="flex items-start justify-between gap-4">
             <Dialog.Title className="modal-title">{title}</Dialog.Title>
             <Dialog.Close className="icon-button" aria-label="Close dialog">

@@ -6,6 +6,7 @@ import { isCorrectAnswer } from '../lib/study';
 import { levelTitle } from '../data/catalog';
 import { Button, Meter } from './ui';
 import Pronunciation from './Pronunciation';
+import WordMemory from './WordMemory';
 
 export interface StudySession {
   id: string;
@@ -339,6 +340,9 @@ export default function Practice({
           )}
         </form>
       )}
+      {(session.mode === 'flashcards' ? revealed : result !== null) ? (
+        <WordMemory key={word.id} word={word} />
+      ) : null}
     </section>
   );
 }

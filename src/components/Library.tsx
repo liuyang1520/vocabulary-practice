@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo, useState } from 'react';
+import { useDeferredValue, useMemo, useRef, useState } from 'react';
 import {
   ArrowRight,
   Bookmark,
@@ -6,6 +6,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Download,
+  Lightbulb,
   Search,
   Trash2,
   Upload,
@@ -13,8 +14,10 @@ import {
 import type { Level, SavedState, Word } from '../types';
 import { isInCollection, levels, levelTitle, section4Topics } from '../data/catalog';
 import { wordsToCsv } from '../lib/csv';
-import { Button, downloadFile, EmptyState, Picker } from './ui';
+import { Button, downloadFile, EmptyState, Modal, Picker } from './ui';
 import Pronunciation from './Pronunciation';
+import WordMemory from './WordMemory';
+import MemoryGuide from './MemoryGuide';
 
 interface Props {
   words: Word[];
@@ -34,6 +37,8 @@ export default function Library({ words, state, onBookmark, onImport, onDelete, 
   const [status, setStatus] = useState('all');
   const [unit, setUnit] = useState(state.section4Unit);
   const [page, setPage] = useState(0);
+  const [memoryWord, setMemoryWord] = useState<Word | null>(null);
+  const memoryTriggerRef = useRef<HTMLButtonElement | null>(null);
   const saved = useMemo(() => new Set(state.bookmarks), [state.bookmarks]);
   const filtered = useMemo(
     () =>
@@ -74,6 +79,7 @@ export default function Library({ words, state, onBookmark, onImport, onDelete, 
           Add vocabulary
         </Button>
       </div>
+      <MemoryGuide />
       <div className="library-toolbar">
         <div className="search-field">
           <Search size={18} />
@@ -228,6 +234,17 @@ export default function Library({ words, state, onBookmark, onImport, onDelete, 
                       </td>
                       <td>
                         <div className="word-actions">
+                          <button
+                            className="icon-button"
+                            aria-label={`Memory aid for ${word.japanese}`}
+                            title="Memory tips"
+                            onClick={(event) => {
+                              memoryTriggerRef.current = event.currentTarget;
+                              setMemoryWord(word);
+                            }}
+                          >
+                            <Lightbulb size={16} />
+                          </button>
                           <Pronunciation word={word} />
                           <button
                             className={`icon-button ${saved.has(word.id) ? 'is-bookmarked' : ''}`}
@@ -311,6 +328,28 @@ export default function Library({ words, state, onBookmark, onImport, onDelete, 
           )}
         </EmptyState>
       )}
+      <Modal
+        open={Boolean(memoryWord)}
+        onOpenChange={(open) => {
+          if (!open) setMemoryWord(null);
+        }}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          memoryTriggerRef.current?.focus();
+        }}
+        title={memoryWord?.japanese || 'Memory aid'}
+        description={memoryWord?.meaning || 'Connect the meaning, sound, and a memorable scene.'}
+      >
+        {memoryWord ? (
+          <>
+            <div className="memory-modal-reading">
+              <span lang="ja">{memoryWord.reading || memoryWord.japanese}</span>
+              <Pronunciation word={memoryWord} />
+            </div>
+            <WordMemory key={memoryWord.id} word={memoryWord} />
+          </>
+        ) : null}
+      </Modal>
       <div className="source-note">
         <span className="eyebrow">ABOUT THE DEFAULT LIST</span>
         <p>

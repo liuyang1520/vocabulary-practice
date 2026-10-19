@@ -7,3 +7,13 @@ dist/
 .env*
 .claude/settings.local.json
 tmp/
+
+# Local planning and agent artifacts
+/.agents/
+/.codex/
+/PLAN.md
+/plan.md
+/IMPLEMENTATION_PLAN.md
+/implementation-plan*.md
+/implementation_plan*.md
+/plans/

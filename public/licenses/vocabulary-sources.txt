@@ -46,4 +46,17 @@ The selections are reviewed with JMdict and adapted to their topic context.
 These companion lists are not a verified export of words introduced by unit.
 Duolingo course versions, unit placement, and vocabulary may differ.
 
+Memory cue dictionary data
+KANJIDIC2, copyright the Electronic Dictionary Research and Development Group.
+https://www.edrdg.org/wiki/KANJIDIC_Project.html
+https://www.edrdg.org/edrdg/licence.html
+CC BY-SA 4.0. Up to two English meanings per used character are selected as
+memory cues, not as an etymological explanation or a Chinese translation.
+JMdict supplies word classes, matched to the bundled meaning and reading.
+JSON conversion: scriptin/jmdict-simplified, release 3.6.2+20260928191014.
+Selected data: src/data/memory-lexicon.json. Extraction script:
+scripts/extract-memory-lexicon.py. Original Chinese cues, short Japanese practice
+phrases, and recall prompts are maintained separately in the app's memory data.
+No Tatoeba example sentences are redistributed by the memory lexicon extractor.
+
 Kotoba is not affiliated with Duolingo.

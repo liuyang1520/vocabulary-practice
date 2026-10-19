@@ -17,6 +17,16 @@ export default defineConfig({
               includeDependenciesRecursively: false,
             },
             {
+              name: 'memory-lexicon',
+              test: /src\/data\/memory-lexicon\.json$/,
+              includeDependenciesRecursively: false,
+            },
+            {
+              name: 'illustrations-index',
+              test: /src\/data\/illustrations\.json$/,
+              includeDependenciesRecursively: false,
+            },
+            {
               name: 'vocabulary-extended',
               test: /src\/data\/japanese-extended\.json$/,
               includeDependenciesRecursively: false,

@@ -61,7 +61,7 @@ In Vocabulary, use a word’s lightbulb button to open its memory aid. Illustrat
 across the catalog in resumable batches; only saved local images are displayed. Words without a
 confirmed reading retain their source text without a guessed reading.
 
-Illustrations currently cover **2,004 of 4,136 words**. The remaining **2,132 words** keep their text
+Illustrations currently cover **3,785 of 4,136 words**. The remaining **351 words** keep their text
 memory aids, with illustration prompts preserved in the catalog for continued generation.
 
 Open **“Make Japanese stick”** on the practice or vocabulary page for a simple routine: connect the

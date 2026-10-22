@@ -88,12 +88,46 @@ SCENES["八分"] = "A digital KITCHEN COUNTDOWN TIMER displays exactly 08:00, in
 SCENES["シャンプー"] = "An unlabeled shampoo pump bottle stands on a clean tiled shelf beside a comb and a few soft soap bubbles. A simple still life of hair-care products only: bottle, comb, and bubbles. No people or body parts."
 SCENES["ございます"] = "A courteous adult host gestures with an open hand toward one BOOK resting on a small table. Make the inanimate book the obvious object being presented: THERE IS A BOOK HERE, expressed very politely. This is gozaimasu, a very polite form of aru for an inanimate object, not iru for a living animal. No animals."
 SCENES["よろしく"] = "Two fully dressed adults meet for the first time and exchange a small courteous bow, smiling warmly. One has just introduced themselves. Show the common Japanese greeting yoroshiku: PLEASE TREAT ME KINDLY or NICE TO MEET YOU. A simple introduction scene, not cleaning or housework."
+for compass_word, arrow_position in {
+    "北東": "UPPER RIGHT, exactly halfway between north at the top and east on the right",
+    "北西": "UPPER LEFT, exactly halfway between north at the top and west on the left",
+    "南東": "LOWER RIGHT, exactly halfway between south at the bottom and east on the right",
+    "南西": "LOWER LEFT, exactly halfway between south at the bottom and west on the left",
+}.items():
+    SCENES[compass_word] = (
+        "A simple TOP-DOWN compass-rose diagram centered on cream paper. Thin gray lines form a cardinal cross. "
+        "The top of the cross is labeled with exactly one small capital N, establishing NORTH UP. "
+        f"One large thick ORANGE ARROW starts at the center and points toward the {arrow_position}. "
+        "The orange arrow is the main subject. Keep the viewpoint flat, with no perspective tilt. "
+        "No scenery, people, physical compass needles, or other arrows. The only writing is the single N at the top."
+    )
+SCENES["滑り"] = "A small glossy mound of pale green craft slime sits on a ceramic tray beside an unlabelled open jar. A wooden stirring stick lifts a short sticky strand, making the thick gooey SLIMY TEXTURE immediately visible. This vocabulary item is read NUMERI and means SLIME or SLIMINESS, rather than suberi meaning sliding. An object-only craft-material still life: tray, jar, stick, and slime. No people, animals, or body parts."
+SCENES["そっち"] = "Two adults stand several steps apart in a quiet park. The speaker on the left points toward a park bench right beside the listener on the right. A small arrow on the ground leads from the speaker toward that listener and the nearby bench. Make THAT WAY, TOWARD YOUR SIDE clear: the destination is near the listener, rather than a distant landscape beyond both people. Both people and the bench are visible."
+SCENES["そちら"] = SCENES["そっち"]
+SCENES["キロ"] = "The exact numeral 1000 is formed from four large carved wooden digits standing in one clear row on cream paper: ONE followed by exactly THREE ZEROS. This is the metric prefix KILO meaning ONE THOUSAND. Make 1000 large and immediately readable; do not depict an uncountable pile of objects. No units, letters, or other numbers."
+SCENES["二番"] = "A cheerful runner proudly holds a large SILVER MEDAL at chest level. The silver medal prominently displays exactly the numeral 2. Emphasize SECOND PLACE with the silver medal and its clearly readable 2, rather than winning a race. Simple uncluttered background, no other numbers or writing."
+SCENES["レベル"] = "Three small stair-step platforms rise from low to medium to high, representing a progression of learning ability. One adult learner holding a book stands on the middle platform, which is gently highlighted in orange. Show a person's CURRENT SKILL LEVEL or STANDARD OF ABILITY, with a clear low-to-high progression. No construction tools, spirit levels, lettering, or numerals."
+SCENES["負け"] = "The LOSING chess player is large in the foreground, looking gently disappointed at their own king lying on its side on the chessboard. The opponent sits farther away with a quiet sympathetic smile. Emphasize accepting a DEFEAT OR LOSS through the foreground player's expression and the fallen king. No trophies, finish lines, victory gestures, or celebration."
+SCENES["殺し"] = "A gently serious murder-mystery scene: one adult detective with a magnifying glass examines a simple chalk outline of a person on the floor, behind a cordon. Convey the noun MURDER OR KILLING through a detective investigating a fictional crime scene. No actual body, weapon, attack, blood, wounds, or graphic details. Keep the scene calm and suitable for a vocabulary card."
+SCENES["電子"] = "An educational symbol of ONE ELECTRON: a single large bright BLUE SPHERE bearing one clearly visible MINUS SIGN at its center, representing its negative electric charge. A faint thin circular orbital guide and a tiny gray nucleus far behind provide subtle atomic context, but the large blue negatively charged particle is the unmistakable main subject. The only mark is the minus sign on the blue sphere. Do not make the complete atom or its nucleus the main subject. No people or lettering."
+SCENES["暴力"] = "A simple symbolic close-up shows one clenched adult fist striking a small wooden crate, with a few wooden splinters and clear impact lines. Convey VIOLENT DESTRUCTIVE FORCE directed only at an inanimate object. Keep the image calm in color and non-graphic. No other people, children, animals, injuries, weapons, or fighting between people."
+SCENES["サイト"] = "A laptop screen prominently displays ONE WEBSITE inside a clear web-browser window, with a simple top address bar, navigation tabs, a landscape picture, and neatly arranged content cards. Convey a WEBSITE, the Japanese technology word saito from English web site. A clean computer still life only. No archaeological ruins, construction sites, excavation, people, logos, or readable text."
+SCENES["つらい"] = "A weary adult sits at a desk after a very difficult day, head lowered into their hands, shoulders slumped, with a few quiet tears. A small pile of unfinished papers and a rainy window establish a hard situation. Focus on EMOTIONAL PAIN AND HARDSHIP, tsurai meaning painful, distressing, or hard to bear. No food, tasting, injuries, or violence. This is not a bitter flavor."
+SCENES["殺人"] = SCENES["殺し"]
+SCENES["死刑"] = "A quiet law-court tabletop holds a closed legal book, a wooden gavel, and balanced scales. A small framed pictogram above the book depicts an EMPTY gallows, with no one nearby. Convey the concept of CAPITAL PUNISHMENT or the DEATH PENALTY through legal judgment and the empty symbolic gallows. Calm symbolic still life only. No people, bodies, restraints, violence, or execution scene."
+SCENES["ひどい"] = "Two adults in a courtyard: one has dropped a stack of books and looks upset while gathering them. The other person points and laughs unkindly, refusing to help. Emphasize CRUEL OR HEARTLESS BEHAVIOR through the unkind expression and refusal of help. No physical violence, injuries, weapons, or animals."
+SCENES["変わらない"] = "Three side-by-side panels show the EXACT SAME plain gray stone, centered at the identical size and position on a quiet cream table. Its shape, color, and position are identical in all three panels. Only a tiny corner weather icon changes between sun, cloud, and snow. The UNCHANGING stone is the large primary subject. Show DOES NOT CHANGE, CONSTANT OR INVARIANT, not a tree changing its leaves with the seasons. No writing or numbers."
+SCENES["落ち"] = "An adult notices an unchecked umbrella picture on a simple illustrated packing checklist. Their packed bag contains a book and hat, but the real umbrella has been left beside the door. Highlight the single unmarked checkbox and the forgotten umbrella to convey an OMISSION, OVERSIGHT, or item left out. This vocabulary sense is a mental slip or omission, not physically slipping or falling. No banana skins, falling people, words, or letters."
+SCENES["上げ"] = "A dress lies flat on a sewing table. Two hands pinch a narrow fold in the dress fabric and secure it with sewing pins, with a neat stitched tuck visible next to it. Emphasize FABRIC FOLDED AND SEWN INTO A GARMENT, a tailoring tuck or pleat. This noun means a tuck in clothing, not tucking in a bedsheet. No beds or blankets."
+SCENES["数年"] = "Three annual desk calendars stand side by side, clearly labeled only 2024, 2025, and 2026, from left to right. Under EACH large year label is a small complete four-season motif: blossom, sun, orange leaf, snowflake. EACH calendar represents an ENTIRE YEAR, so the scene shows several consecutive YEARS, not just the four seasons within one year. The only writing is the three year labels 2024, 2025, 2026."
 
 
 def build_prompt(word):
     style = STYLE
-    if word["japanese"] == "八分":
-        style = style.replace("No text, no letters, no numbers, no logos or watermark.", "No letters, logos, or watermark. The only numerals are the explicitly requested timer display.")
+    if word["japanese"] in {"北東", "北西", "南東", "南西"}:
+        style = style.replace("No text, no letters, no numbers, no logos or watermark.", "The only writing is a single capital N at the top of the compass rose. No other letters, numbers, logos, or watermark.")
+    if word["japanese"] in {"八分", "キロ", "二番", "数年"}:
+        style = style.replace("No text, no letters, no numbers, no logos or watermark.", "No letters, logos, or watermark. The only numerals are those explicitly requested for this educational illustration.")
     scene = SCENES.get(word["japanese"])
     name = re.split(r"[,;]", word["meaning"])[0].strip()
     if name in PERSON_NAMES:

@@ -264,6 +264,33 @@ export const memoryPhrases: Record<string, [string, string, string, string]> = {
 };
 
 export const memoryConnections: Record<string, string> = {
+  サイト:
+    'In this technology vocabulary, サイト is a website: English (web)site and Chinese 网站／網站. Picture pages in a browser. An archaeological site is 遺跡（いせき）.',
+  つらい:
+    'つらい describes a painful experience or a situation that is hard to bear: Chinese 难受／難受、痛苦. English “bitter” here describes hardship rather than flavor. Bitter-tasting food is 苦い（にがい）.',
+  電子: 'Connect 電子（でんし）with Chinese 电子／電子 and English electron. Recall the negatively charged particle from the minus sign. 原子（げんし）means the whole atom; 電子 is one kind of particle within it.',
+  北東: '北東（ほくとう）is northeast: Chinese 东北／東北. Japanese puts 北 (north) before 東 (east). On a map with north at the top, picture the arrow pointing up and right.',
+  北西: '北西（ほくせい）is northwest: Chinese 西北. Japanese puts 北 (north) before 西 (west). With north at the top, picture the arrow pointing up and left.',
+  南東: '南東（なんとう）is southeast: Chinese 东南／東南. Japanese puts 南 (south) before 東 (east). With north at the top, picture the arrow pointing down and right.',
+  南西: '南西（なんせい）is southwest: Chinese 西南. Japanese puts 南 (south) before 西 (west). With north at the top, picture the arrow pointing down and left.',
+  滑り: 'Here 滑り is read ぬめり and means slime or sliminess: Chinese 黏滑感. Picture glossy goo, then say ぬ・め・り. This reading differs from すべり, meaning sliding.',
+  アイス:
+    'In food contexts, アイス often shortens アイスクリーム: Chinese 冰淇淋. Connect it to English ice cream and the picture of a frozen dessert. For plain ice cubes, Japanese commonly uses 氷（こおり）.',
+  上げ: 'Here 上げ（あげ）refers to a tuck in clothing. Connect it to Chinese 衣褶 and picture fabric folded upward and sewn into a garment; 上 gives you a visual cue for the upward fold.',
+  数年: 'Use Chinese 数年／數年 for the meaning: several complete years. Read 数 as すう in this phrase, then add ねん for 年. Picture consecutive yearly calendars, each covering a full year.',
+  変わらない:
+    'Connect 変わらない with Chinese 不变／不變: 変わる means “to change,” and ない makes it negative. Picture the same stone staying identical as the weather changes.',
+  落ち: 'Here 落ち means something left out: Chinese 遗漏／遺漏, a slip or omission. Imagine an item that has “fallen out” of a checklist, and recall おち from that scene.',
+  殺し: 'Use Chinese 杀／殺 as the meaning cue. 殺し（ころし）names a killing; 殺す（ころす）is the verb “to kill.” Picture a detective investigating a murder mystery to recall the noun.',
+  ひどい:
+    'Chinese 酷 can mean “cool,” but Japanese ひどい／酷い is negative: cruel, terrible, or severe. Use 过分／過分 for unkind behavior and 糟糕 for an awful situation; check the context.',
+  レベル:
+    'レベル often describes a degree or standard of ability: 日本語のレベル. Connect English level with Chinese 水平／程度, then say レ・ベ・ル.',
+  負け: 'Connect 負け to Chinese 输／輸, and pair まけ (loss) with かち (win). Picture the losing player accepting the result, then recall the Japanese word.',
+  キロ: 'Kilo- means one thousand: キログラム is 1,000 grams, and キロメートル is 1,000 metres. Connect キロ to English kilo- and Chinese 千; context tells you which unit is meant.',
+  二番: 'Use Chinese 二 as the meaning cue, then add 番 for order: 第二, second in line or second place. Recall にばん as a position, rather than only a count of two objects.',
+  そっち:
+    'Use the こ・そ・あ・ど pattern: こっち is this way, near me（这边／這邊）; そっち is that way, near you（你那边／你那邊）; あっち is over there, away from both of us（那边／那邊）; どっち asks which way（哪边／哪邊）. そちら is the more polite form of そっち.',
   ございます:
     'A very polite form of ある, used for inanimate existence: 本がございます. Learn it as part of familiar polite phrases such as おはようございます and ありがとうございます. It is not the living-being verb います.',
   よろしく:
@@ -347,3 +374,4 @@ memoryPhrases.ございます = [
   'There is a book here. (very polite)',
 ];
 memoryPhrases.よろしく = memoryPhrases.どうぞよろしく;
+memoryConnections.そちら = memoryConnections.そっち;

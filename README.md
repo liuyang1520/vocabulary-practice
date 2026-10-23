@@ -23,8 +23,8 @@ The production site is generated in `dist/` and can be served by any static web 
 
 ## GitHub Pages
 
-The site is hosted at https://liuyang1520.github.io/vocabulary-practice/. Vite's `base` is
-`/vocabulary-practice/` so built assets, the favicon, home links, and license links resolve inside the
+The site is hosted at https://liuyang1520.github.io/kotoba/. Vite's `base` is
+`/kotoba/` so built assets, the favicon, home links, and license links resolve inside the
 repository's Pages path.
 
 In the GitHub repository, go to **Settings → Pages → Build and deployment → Source** and select

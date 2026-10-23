@@ -264,6 +264,7 @@ export const memoryPhrases: Record<string, [string, string, string, string]> = {
 };
 
 export const memoryConnections: Record<string, string> = {
+  自殺: '自殺（じさつ）uses the same characters as Chinese 自杀／自殺 and means suicide. Say じ・さ・つ. Use the quiet candle and flower as an abstract remembrance cue for the word.',
   サイト:
     'In this technology vocabulary, サイト is a website: English (web)site and Chinese 网站／網站. Picture pages in a browser. An archaeological site is 遺跡（いせき）.',
   つらい:

@@ -57,12 +57,12 @@ can share notes when dictionary entry, reading, and intended meaning agree. Pers
 a general strategy matched to their writing system.
 
 In practice, the aid appears after revealing a flashcard or checking an answer in either direction.
-In Vocabulary, use a word’s lightbulb button to open its memory aid. Illustrations are being extended
-across the catalog in resumable batches; only saved local images are displayed. Words without a
-confirmed reading retain their source text without a guessed reading.
+In Vocabulary, use a word’s lightbulb button to open its memory aid. Every bundled word has a saved
+local illustration. Words without a confirmed reading retain their source text without a guessed
+reading.
 
-Illustrations currently cover **3,785 of 4,136 words**. The remaining **351 words** keep their text
-memory aids, with illustration prompts preserved in the catalog for continued generation.
+Illustrations cover **all 4,136 bundled words**, with the original prompts preserved in the catalog
+for future refinements.
 
 Open **“Make Japanese stick”** on the practice or vocabulary page for a simple routine: connect the
 meaning through Chinese or English, listen to the Japanese reading, picture one scene, then cover

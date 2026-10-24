@@ -8,15 +8,20 @@ export default function ProgressPage({
   state,
   words,
   onPractice,
+  onLearn,
 }: {
   state: SavedState;
   words: Word[];
   onPractice: () => void;
+  onLearn: () => void;
 }) {
   const progress = Object.values(state.progress);
   const learned = progress.filter((entry) => entry.correct >= 3 && entry.lastCorrect).length;
   const attempts = progress.reduce((sum, entry) => sum + entry.attempts, 0);
   const correct = progress.reduce((sum, entry) => sum + entry.correct, 0);
+  const learning = Object.values(state.learningProgress);
+  const learningAttempts = learning.reduce((sum, entry) => sum + entry.attempts, 0);
+  const learningCorrect = learning.reduce((sum, entry) => sum + entry.correct, 0);
   const streak = studyStreak(state.sessions.map((session) => session.completedAt));
   const days = Array.from({ length: 7 }, (_, i) => {
     const date = new Date();
@@ -81,6 +86,27 @@ export default function ProgressPage({
             <p>{stat.detail}</p>
           </div>
         ))}
+      </div>
+      <div className="lab-progress-card">
+        <div>
+          <span className="eyebrow">JAPANESE LAB</span>
+          <h2>Patterns becoming familiar.</h2>
+          <p>
+            {state.reviewedLessons.length} {state.reviewedLessons.length === 1 ? 'note' : 'notes'}{' '}
+            reviewed · {learning.length} {learning.length === 1 ? 'question' : 'questions'} tried ·{' '}
+            {learningAttempts
+              ? `${Math.round((learningCorrect / learningAttempts) * 100)}% recall accuracy`
+              : 'Your first drill is waiting'}
+          </p>
+          <p className="small-note">
+            Grammar, verb forms, scenarios, and useful extras. Tracked separately from word
+            practice.
+          </p>
+        </div>
+        <Button variant="secondary" onClick={onLearn}>
+          Open Japanese lab
+          <ArrowRight size={16} />
+        </Button>
       </div>
       <div className="progress-panels">
         <div className="panel activity-panel">

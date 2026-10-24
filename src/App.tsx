@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { lazy, Suspense, useMemo, useState } from 'react';
 import * as Tabs from '@radix-ui/react-tabs';
 import {
   ArrowDown,
@@ -31,6 +31,8 @@ import Pronunciation from './components/Pronunciation';
 import MemoryGuide from './components/MemoryGuide';
 import { SpeechProvider } from './components/Speech';
 
+const LearningLab = lazy(() => import('./components/LearningLab'));
+
 const featuredWord = defaultWords.find((word) => word.japanese === 'おちゃ')!;
 
 export default function App() {
@@ -42,6 +44,7 @@ export default function App() {
   const [length, setLength] = useState('10');
   const [focus, setFocus] = useState('all');
   const [session, setSession] = useState<StudySession | null>(null);
+  const [learningDrill, setLearningDrill] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [notice, setNotice] = useState('');
@@ -128,11 +131,16 @@ export default function App() {
               </span>
             </a>
             <Tabs.List className="main-nav" aria-label="Main navigation">
-              <Tabs.Trigger value="practice">Practice</Tabs.Trigger>
-              <Tabs.Trigger value="library" disabled={Boolean(session)}>
+              <Tabs.Trigger value="practice" disabled={learningDrill}>
+                Practice
+              </Tabs.Trigger>
+              <Tabs.Trigger value="library" disabled={Boolean(session) || learningDrill}>
                 Vocabulary<span className="nav-count">{words.length.toLocaleString()}</span>
               </Tabs.Trigger>
-              <Tabs.Trigger value="progress" disabled={Boolean(session)}>
+              <Tabs.Trigger value="learn" disabled={Boolean(session)}>
+                Japanese lab
+              </Tabs.Trigger>
+              <Tabs.Trigger value="progress" disabled={Boolean(session) || learningDrill}>
                 Progress
               </Tabs.Trigger>
             </Tabs.List>
@@ -240,7 +248,7 @@ export default function App() {
                     </h1>
                     <p>
                       A few new words. A little more confidence.
-                      <br className="desktop-break" /> Build a vocabulary that stays with you.
+                      <br className="desktop-break" /> Words, patterns, and real conversations.
                     </p>
                     <div className="hero-actions">
                       <Button onClick={() => startPractice()} disabled={!eligible.length}>
@@ -330,6 +338,20 @@ export default function App() {
                       <span>{streak ? 'Keep the habit growing.' : 'Start something good.'}</span>
                     </div>
                   </div>
+                </section>
+                <section className="lab-home-card" aria-label="Explore the Japanese lab">
+                  <div>
+                    <span className="eyebrow">PUT YOUR WORDS TO WORK</span>
+                    <h2>A little grammar. A whole new conversation.</h2>
+                    <p>
+                      Grammar notes, a verb-form explorer, and everyday scenes. Learn a pattern,
+                      then try it from memory.
+                    </p>
+                  </div>
+                  <Button variant="secondary" onClick={() => setTab('learn')}>
+                    Explore Japanese lab
+                    <ArrowRight size={16} />
+                  </Button>
                 </section>
                 <section className="collections-section">
                   <div className="section-heading">
@@ -609,8 +631,55 @@ export default function App() {
               onStudy={(list, selectedLevel) => startPractice(list, selectedLevel)}
             />
           </Tabs.Content>
+          <Tabs.Content value="learn">
+            <Suspense
+              fallback={
+                <p role="status" className="lab-callout">
+                  Opening Japanese lab…
+                </p>
+              }
+            >
+              <LearningLab
+                state={state}
+                onDrillChange={setLearningDrill}
+                onReview={(id) =>
+                  setState((previous) => ({
+                    ...previous,
+                    reviewedLessons: previous.reviewedLessons.includes(id)
+                      ? previous.reviewedLessons.filter((item) => item !== id)
+                      : [...previous.reviewedLessons, id],
+                  }))
+                }
+                onRate={(id, correct) =>
+                  setState((previous) => {
+                    const entry = previous.learningProgress[id] || {
+                      correct: 0,
+                      attempts: 0,
+                      lastCorrect: false,
+                    };
+                    return {
+                      ...previous,
+                      learningProgress: {
+                        ...previous.learningProgress,
+                        [id]: {
+                          correct: entry.correct + Number(correct),
+                          attempts: entry.attempts + 1,
+                          lastCorrect: correct,
+                        },
+                      },
+                    };
+                  })
+                }
+              />
+            </Suspense>
+          </Tabs.Content>
           <Tabs.Content value="progress">
-            <ProgressPage state={state} words={words} onPractice={() => setTab('practice')} />
+            <ProgressPage
+              state={state}
+              words={words}
+              onPractice={() => setTab('practice')}
+              onLearn={() => setTab('learn')}
+            />
           </Tabs.Content>
         </main>
         <footer className="site-footer">
@@ -645,7 +714,15 @@ export default function App() {
           onUpdate={(preferences) => setState((previous) => ({ ...previous, ...preferences }))}
           onReset={() => {
             setSession(null);
-            setState((previous) => ({ ...previous, progress: {}, sessions: [] }));
+            setLearningDrill(false);
+            setTab('practice');
+            setState((previous) => ({
+              ...previous,
+              progress: {},
+              sessions: [],
+              reviewedLessons: [],
+              learningProgress: {},
+            }));
           }}
         />
       </Tabs.Root>

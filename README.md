@@ -1,6 +1,6 @@
 # Kotoba
 
-A frontend-only Japanese vocabulary practice app built with React, TypeScript, Vite, Tailwind CSS, and Radix UI. The design takes inspiration from [TypeUI](https://www.typeui.sh/): clear typography, simple buttons, and quiet bordered surfaces, with a warm red accent. Geist is bundled locally; no external font requests are needed.
+A frontend-only Japanese learning and practice app built with React, TypeScript, Vite, Tailwind CSS, and Radix UI. The design takes inspiration from [TypeUI](https://www.typeui.sh/): clear typography, simple buttons, and quiet bordered surfaces, with a warm red accent. Geist is bundled locally; no external font requests are needed.
 
 ## Run locally
 
@@ -14,7 +14,7 @@ pnpm dev
 Open the URL printed by Vite. There are no environment variables, accounts, API keys, or backend services to configure.
 
 ```sh
-pnpm test       # CSV parsing, answer matching, study logic, and vocabulary integrity
+pnpm test       # Vocabulary, conjugation, answer matching, learning content, and save compatibility
 pnpm build      # TypeScript check and production build
 pnpm preview    # Preview the production build
 ```
@@ -46,6 +46,42 @@ domain root, build with `pnpm build --base=/`.
 - Personal vocabulary from pasted text or CSV, plus export of any filtered list. Personal words can be removed from the library.
 
 Progress, bookmarks, preferences, and personal vocabulary live in versioned browser local storage. Clearing site data removes them. They do not sync across browsers or devices. Bundled word lists require no remote service at runtime; pronunciation support varies by browser and device. No service worker or offline-install claim is made.
+
+## Japanese lab
+
+Open **Japanese lab** in the navigation or from the practice page to go beyond vocabulary:
+
+- **24 grammar notes** covering sentence order, particles, adjectives, requests, permission,
+  ability, wishes, reasons, comparisons, experience, plans, conditionals, relative clauses,
+  obligations, advice, and giving/receiving. Each includes two examples with kana readings and
+  translations, common traps, a speaking challenge, and a practice question.
+- **27 common verbs in 13 forms**, with explicit godan, ichidan, and irregular groups. Explore
+  dictionary, polite, negative, past, て, potential, volitional, conditional, and desire forms;
+  compare all forms with readings and audio. Exceptions such as 行く, 帰る, and 来る are explained.
+  Practice one verb, one form across verbs, or the matching verb selection.
+- **Eight everyday dialogues**: café, station, restaurant, shopping, weekend plans, hotel,
+  household waste sorting, and language exchange. Cover the English, listen to either role,
+  follow links to related grammar, and use the role-play mission to change the scene.
+- **Eight practical guides**: counters, time, dates, demonstratives, politeness, sound timing,
+  transitive/intransitive verb pairs, and conversation repair.
+
+Search in English or Japanese and filter notes by study stage. Short drills draw up to ten
+questions from the matching material, using multiple choice or typed Japanese, and explain
+answers immediately. Retry missed questions at the end or select **Needs review** for the
+current category. Typed answers accept the listed Japanese and kana readings, including width
+and katakana equivalents; drills check specific model answers rather than grading free writing.
+
+Reviewed notes and drill results persist in the existing browser save and appear on Progress,
+separately from vocabulary statistics and the daily word goal. Existing saves retain their word
+progress. **Reset study progress** also clears lab results and reviewed notes. Audio shares the
+voice, speed, and kana-reading preferences in Study settings.
+
+The notes, examples, and dialogues are original study material. Further learning links point to
+Japan Foundation's [Irodori Starter](https://www.irodori.jpf.go.jp/en/starter/pdf.html),
+[Elementary 1](https://www.irodori.jpf.go.jp/en/elementary01/pdf.html), and
+[Elementary 2](https://www.irodori.jpf.go.jp/en/elementary02/pdf.html). Study stages are suggestions,
+not certified proficiency or JLPT levels. The lab loads when opened; bundled material needs no
+API key or backend service.
 
 ## Visual memory aids
 

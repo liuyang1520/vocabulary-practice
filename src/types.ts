@@ -40,4 +40,6 @@ export interface SavedState {
   voiceURI: string;
   speechRate: number;
   section4Unit: string;
+  reviewedLessons: string[];
+  learningProgress: Record<string, WordProgress>;
 }

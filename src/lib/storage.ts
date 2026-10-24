@@ -14,16 +14,20 @@ export function emptyState(): SavedState {
     voiceURI: 'auto',
     speechRate: 1,
     section4Unit: '57',
+    reviewedLessons: [],
+    learningProgress: {},
   };
 }
 
-function loadState(): SavedState {
+export function parseSavedState(serialized: string | null): SavedState {
   try {
-    const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+    const value = JSON.parse(serialized || 'null');
     if (!value || value.version !== 1) return emptyState();
     const state = emptyState();
     if (Array.isArray(value.bookmarks))
       state.bookmarks = value.bookmarks.filter((id: unknown) => typeof id === 'string');
+    if (Array.isArray(value.reviewedLessons))
+      state.reviewedLessons = value.reviewedLessons.filter((id: unknown) => typeof id === 'string');
     if ([5, 10, 20, 30].includes(value.goal)) state.goal = value.goal;
     if (typeof value.showReading === 'boolean') state.showReading = value.showReading;
     if (typeof value.voiceURI === 'string' && value.voiceURI.length <= 300)
@@ -55,9 +59,10 @@ function loadState(): SavedState {
           reading: typeof word.reading === 'string' ? word.reading : undefined,
         }));
     }
-    if (value.progress && typeof value.progress === 'object') {
-      state.progress = Object.fromEntries(
-        Object.entries(value.progress).filter((entry) => {
+    for (const key of ['progress', 'learningProgress'] as const) {
+      if (!value[key] || typeof value[key] !== 'object') continue;
+      state[key] = Object.fromEntries(
+        Object.entries(value[key]).filter((entry) => {
           const progress = entry[1] as WordProgress | null;
           return (
             progress &&
@@ -94,7 +99,13 @@ function loadState(): SavedState {
 }
 
 export function useSavedState() {
-  const [state, setState] = useState<SavedState>(loadState);
+  const [state, setState] = useState<SavedState>(() => {
+    try {
+      return parseSavedState(localStorage.getItem(STORAGE_KEY));
+    } catch {
+      return emptyState();
+    }
+  });
   const [storageError, setStorageError] = useState(false);
   useEffect(() => {
     try {

@@ -138,8 +138,8 @@ export default function Settings({
         {confirmReset ? (
           <>
             <p>
-              Reset all answer history and completed sessions? Your personal word list and saved
-              words will be kept.
+              Reset word and Japanese lab answer history, reviewed notes, and completed sessions?
+              Your personal word list and saved words will be kept.
             </p>
             <div className="flex gap-3 mt-3">
               <Button variant="secondary" onClick={() => setConfirmReset(false)}>
